@@ -29,7 +29,7 @@ class Product(Base):
     gradient = Column(String(100))
     size = Column(SQLEnum(ProductSize), default=ProductSize.MEDIUM)
     stock = Column(Integer, default=0)
-    image_url = Column(String(500))
+    image_url = Column(Text)
     is_active = Column(Integer, default=1)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

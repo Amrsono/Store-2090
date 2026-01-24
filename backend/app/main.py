@@ -132,6 +132,13 @@ async def migrate_database():
                     print("'verification_token' already exists")
                 else:
                     raise e
+
+            # Update products.image_url to TEXT (Postgres only)
+            try:
+                connection.execute(text("ALTER TABLE products ALTER COLUMN image_url TYPE TEXT"))
+                print("Updated products.image_url to TEXT")
+            except Exception as e:
+                print(f"Skipping products.image_url update (expected on SQLite): {str(e)}")
                     
         return {"status": "success", "message": "Database migration checks completed."}
     except Exception as e:
