@@ -17,7 +17,7 @@ class Query:
     ) -> List[Product]:
         """Get all products with optional filtering"""
         db: Session = next(get_db())
-        query = db.query(ProductModel).filter(ProductModel.is_active == True)
+        query = db.query(ProductModel).filter(ProductModel.is_active == 1)
         
         if category:
             query = query.filter(ProductModel.category == category.value)
