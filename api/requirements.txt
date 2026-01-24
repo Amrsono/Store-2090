@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+strawberry-graphql[fastapi]
+sqlalchemy
+psycopg2-binary
+alembic
+pydantic
+pydantic-settings
+python-dotenv
+python-jose[cryptography]
+passlib
+python-multipart
+email-validator
+mangum
