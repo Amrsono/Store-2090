@@ -30,18 +30,29 @@ class Mutation:
         if existing_user:
             raise Exception("User with this email or username already exists")
         
+        # Import email utilities
+        from app.utils.email import generate_verification_token, send_verification_email
+        
+        # Generate verification token
+        verification_token = generate_verification_token()
+        
         # Create new user
         hashed_password = get_password_hash(input.password)
         new_user = UserModel(
             email=input.email,
             username=input.username,
             hashed_password=hashed_password,
-            full_name=input.full_name
+            full_name=input.full_name,
+            email_verified=False,
+            verification_token=verification_token
         )
         
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+        
+        # Send verification email
+        send_verification_email(new_user.email, verification_token, new_user.username)
         
         # Create access token
         access_token = create_access_token(data={"sub": new_user.email})
@@ -56,6 +67,7 @@ class Mutation:
                 full_name=new_user.full_name,
                 is_active=new_user.is_active,
                 is_admin=new_user.is_admin,
+                email_verified=new_user.email_verified,
                 created_at=new_user.created_at
             )
         )
@@ -87,6 +99,7 @@ class Mutation:
                 full_name=user.full_name,
                 is_active=user.is_active,
                 is_admin=user.is_admin,
+                email_verified=user.email_verified,
                 created_at=user.created_at
             )
         )
@@ -330,4 +343,40 @@ class Mutation:
         db.commit()
         
         return True
+    
+    @strawberry.mutation
+    def verify_email(self, token: str) -> User:
+        """Verify user email with verification token"""
+        db: Session = next(get_db())
+        
+        # Find user by verification token
+        user = db.query(UserModel).filter(UserModel.verification_token == token).first()
+        if not user:
+            raise Exception("Invalid or expired verification token")
+        
+        # Check if already verified
+        if user.email_verified:
+            raise Exception("Email already verified")
+        
+        # Mark as verified and clear token
+        user.email_verified = True
+        user.verification_token = None
+        db.commit()
+        db.refresh(user)
+        
+        # Send welcome email
+        from app.utils.email import send_welcome_email
+        send_welcome_email(user.email, user.username)
+        
+        return User(
+            id=user.id,
+            email=user.email,
+            username=user.username,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_admin=user.is_admin,
+            email_verified=user.email_verified,
+            created_at=user.created_at
+        )
+
 

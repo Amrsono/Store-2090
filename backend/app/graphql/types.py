@@ -36,6 +36,7 @@ class User:
     full_name: Optional[str]
     is_active: bool
     is_admin: bool
+    email_verified: bool
     created_at: datetime
 
 
