@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-secret-key-change-this-in-production-min-32-chars"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "https://*.vercel.app"]
+    ALLOWED_ORIGINS: List[str] = ["*"]
     
     class Config:
         env_file = ".env"

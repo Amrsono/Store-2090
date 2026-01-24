@@ -12,8 +12,8 @@ def seed_products():
     # Check if products already exist
     existing_products = db.query(Product).count()
     if existing_products > 0:
-        print(f"Database already has {existing_products} products. Skipping seed.")
-        return
+        print(f"Database already has {existing_products} products. Skipping product seeding.")
+        # return - Allow script to continue to admin check
     
     products = [
         {
@@ -84,9 +84,32 @@ def seed_products():
     
     db.commit()
     print(f"✅ Successfully seeded {len(products)} products!")
+    
+    # Check if admin user exists
+    from app.models import User
+    from app.utils.auth import get_password_hash
+    
+    admin_email = "admin@cyber.com"
+    existing_admin = db.query(User).filter(User.email == admin_email).first()
+    
+    if not existing_admin:
+        print(f"Creating admin user: {admin_email}")
+        admin_user = User(
+            email=admin_email,
+            username="admin",
+            hashed_password=get_password_hash("admin123"),
+            is_admin=True,
+            full_name="System Administrator"
+        )
+        db.add(admin_user)
+        db.commit()
+        print("✅ Admin user created successfully!")
+    else:
+        print("ℹ️ Admin user already exists.")
+
     db.close()
 
 
 if __name__ == "__main__":
-    print("🌱 Seeding database with fashion products...")
+    print("🌱 Seeding database...")
     seed_products()
