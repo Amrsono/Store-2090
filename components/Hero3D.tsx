@@ -1,78 +1,13 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
-import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import * as THREE from 'three';
-
-function AnimatedSphere({ position, color }: { position: [number, number, number]; color: string }) {
-    const meshRef = useRef<THREE.Mesh>(null);
-    const [hovered, setHovered] = useState(false);
-
-    return (
-        <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-            <Sphere
-                ref={meshRef}
-                args={[1, 64, 64]}
-                position={position}
-                onPointerOver={() => setHovered(true)}
-                onPointerOut={() => setHovered(false)}
-                scale={hovered ? 1.2 : 1}
-            >
-                <MeshDistortMaterial
-                    color={color}
-                    attach="material"
-                    distort={0.4}
-                    speed={2}
-                    roughness={0.2}
-                    metalness={0.8}
-                    emissive={color}
-                    emissiveIntensity={hovered ? 0.8 : 0.3}
-                />
-            </Sphere>
-        </Float>
-    );
-}
-
-function CyberGrid() {
-    return (
-        <gridHelper args={[20, 20, '#00d4ff', '#b300ff']} position={[0, -2, 0]} />
-    );
-}
-
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Hero3D() {
     const { t } = useLanguage();
 
     return (
-        <div className="relative w-full h-screen overflow-hidden">
-            {/* Gradient Mesh Background */}
-            <div className="absolute inset-0 gradient-mesh opacity-50" />
-
-            {/* 3D Canvas */}
-            <div className="absolute inset-0">
-                <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} color="#00d4ff" />
-                    <pointLight position={[-10, -10, -10]} intensity={0.5} color="#b300ff" />
-                    <spotLight position={[0, 10, 0]} angle={0.3} penumbra={1} intensity={1} color="#ff00ff" />
-
-                    <AnimatedSphere position={[-2, 0, 0]} color="#00d4ff" />
-                    <AnimatedSphere position={[2, 0, 0]} color="#b300ff" />
-                    <AnimatedSphere position={[0, 2, -2]} color="#ff00ff" />
-
-                    <CyberGrid />
-
-                    <OrbitControls
-                        enableZoom={false}
-                        enablePan={false}
-                        autoRotate
-                        autoRotateSpeed={0.5}
-                    />
-                </Canvas>
-            </div>
+        <div className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
 
             {/* Hero Content */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">

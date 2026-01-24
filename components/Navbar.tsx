@@ -78,28 +78,6 @@ export default function Navbar() {
                     <div className="hidden md:flex items-center space-x-4">
                         <LanguageSwitcher />
 
-                        {/* Cart Button */}
-                        <Link href="/cart">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="relative glass p-2 rounded-lg hover:neon-glow-blue transition-all duration-300"
-                            >
-                                <span className="text-xl">🛒</span>
-                                <AnimatePresence>
-                                    {totalItems > 0 && (
-                                        <motion.span
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            exit={{ scale: 0 }}
-                                            className="absolute -top-2 -right-2 w-5 h-5 rounded-full gradient-cyber text-[10px] font-bold flex items-center justify-center neon-glow-purple"
-                                        >
-                                            {totalItems}
-                                        </motion.span>
-                                    )}
-                                </AnimatePresence>
-                            </motion.button>
-                        </Link>
 
                         <Link href="/login">
                             <motion.button
@@ -134,16 +112,6 @@ export default function Navbar() {
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden flex items-center gap-4">
-                        <Link href="/cart">
-                            <span className="relative text-2xl">
-                                🛒
-                                {totalItems > 0 && (
-                                    <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full gradient-cyber text-[8px] font-bold flex items-center justify-center">
-                                        {totalItems}
-                                    </span>
-                                )}
-                            </span>
-                        </Link>
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             className="glass p-2 rounded-lg"
