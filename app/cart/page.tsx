@@ -77,7 +77,11 @@ export default function CartPage() {
                                 <div className="flex flex-col md:flex-row items-center gap-8">
                                     {/* Product Image */}
                                     <div className="w-full md:w-48 h-48 rounded-[2rem] gradient-cyber flex items-center justify-center neon-glow-blue flex-shrink-0 shadow-lg relative overflow-hidden transition-transform duration-500 group-hover:scale-105">
-                                        <span className="text-6xl">👕</span>
+                                        {item.image ? (
+                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <span className="text-6xl">👕</span>
+                                        )}
                                         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
 

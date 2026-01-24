@@ -33,6 +33,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             title: product.title,
             price: product.price,
             category: product.category,
+            image: product.image,
         });
     };
 
