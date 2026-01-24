@@ -6,7 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import { cn } from '@/lib/utils';
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function CheckoutPage() {
+    const { t } = useLanguage();
     const router = useRouter();
     const { items, getTotalPrice, clearCart } = useCartStore();
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
@@ -63,8 +66,8 @@ export default function CheckoutPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-12"
                 >
-                    <h1 className="text-5xl md:text-7xl font-bold text-gradient mb-4">Checkout</h1>
-                    <p className="text-xl text-gray-400">Complete your order</p>
+                    <h1 className="text-5xl md:text-7xl font-bold text-gradient mb-4">{t.checkout.title}</h1>
+                    <p className="text-xl text-gray-400">{t.checkout.completeOrder}</p>
                 </motion.div>
 
                 <form onSubmit={handleSubmit}>
@@ -77,11 +80,11 @@ export default function CheckoutPage() {
                                 animate={{ opacity: 1, x: 0 }}
                                 className="glass-strong rounded-2xl p-6"
                             >
-                                <h2 className="text-2xl font-bold text-gradient mb-6">Shipping Information</h2>
+                                <h2 className="text-2xl font-bold text-gradient mb-6">{t.checkout.shippingAddress}</h2>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-medium mb-2">Full Name</label>
+                                        <label className="block text-sm font-medium mb-2">{t.auth.fullName}</label>
                                         <input
                                             type="text"
                                             required
@@ -93,7 +96,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Email</label>
+                                        <label className="block text-sm font-medium mb-2">{t.auth.email}</label>
                                         <input
                                             type="email"
                                             required
@@ -105,7 +108,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Phone</label>
+                                        <label className="block text-sm font-medium mb-2">{t.checkout.phone}</label>
                                         <input
                                             type="tel"
                                             required
@@ -117,7 +120,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-medium mb-2">Address</label>
+                                        <label className="block text-sm font-medium mb-2">{t.checkout.address}</label>
                                         <input
                                             type="text"
                                             required
@@ -129,7 +132,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">City</label>
+                                        <label className="block text-sm font-medium mb-2">{t.checkout.city}</label>
                                         <input
                                             type="text"
                                             required
@@ -141,7 +144,7 @@ export default function CheckoutPage() {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Postal Code</label>
+                                        <label className="block text-sm font-medium mb-2">{t.checkout.postalCode}</label>
                                         <input
                                             type="text"
                                             required
@@ -161,7 +164,7 @@ export default function CheckoutPage() {
                                 transition={{ delay: 0.1 }}
                                 className="glass-strong rounded-2xl p-6"
                             >
-                                <h2 className="text-2xl font-bold text-gradient mb-6">Payment Method</h2>
+                                <h2 className="text-2xl font-bold text-gradient mb-6">{t.checkout.paymentMethod}</h2>
 
                                 <div className="space-y-3">
                                     {/* Cash on Delivery */}
@@ -185,7 +188,7 @@ export default function CheckoutPage() {
                                                 )}
                                             </div>
                                             <div className="flex-1">
-                                                <p className="font-bold">Cash on Delivery</p>
+                                                <p className="font-bold">{t.checkout.cash}</p>
                                                 <p className="text-sm text-gray-400">Pay when you receive your order</p>
                                             </div>
                                             <span className="text-2xl">💵</span>
@@ -199,8 +202,7 @@ export default function CheckoutPage() {
                                         <div className="flex items-center gap-4">
                                             <div className="w-6 h-6 rounded-full border-2 border-gray-600" />
                                             <div className="flex-1">
-                                                <p className="font-bold">Card Payment</p>
-                                                <p className="text-sm text-gray-400">Credit/Debit card</p>
+                                                <p className="font-bold">{t.checkout.card}</p>
                                             </div>
                                             <span className="text-2xl">💳</span>
                                         </div>
@@ -221,7 +223,7 @@ export default function CheckoutPage() {
                             className="lg:col-span-1"
                         >
                             <div className="glass-strong rounded-2xl p-6 sticky top-24">
-                                <h2 className="text-2xl font-bold text-gradient mb-6">Order Summary</h2>
+                                <h2 className="text-2xl font-bold text-gradient mb-6">{t.checkout.orderSummary}</h2>
 
                                 {/* Items */}
                                 <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
@@ -234,7 +236,7 @@ export default function CheckoutPage() {
                                                 <p className="font-medium truncate">{item.title}</p>
                                                 <p className="text-sm text-gray-400">Qty: {item.quantity}</p>
                                             </div>
-                                            <p className="font-bold text-gradient-yellow">${item.price * item.quantity}</p>
+                                            <p className="font-bold text-gradient-yellow">{t.common.currency} {item.price * item.quantity}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -242,17 +244,17 @@ export default function CheckoutPage() {
                                 {/* Totals */}
                                 <div className="space-y-3 mb-6">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-400">Subtotal</span>
-                                        <span className="font-bold">${getTotalPrice()}</span>
+                                        <span className="text-gray-400">{t.cart.subtotal}</span>
+                                        <span className="font-bold">{t.common.currency} {getTotalPrice()}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-400">Shipping</span>
-                                        <span className="font-bold text-green-400">FREE</span>
+                                        <span className="text-gray-400">{t.cart.shipping}</span>
+                                        <span className="font-bold text-green-400">{t.common.free}</span>
                                     </div>
                                     <div className="border-t border-white/10 pt-3">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xl font-bold">Total</span>
-                                            <span className="text-3xl font-bold text-gradient-yellow">${getTotalPrice()}</span>
+                                            <span className="text-xl font-bold">{t.cart.total}</span>
+                                            <span className="text-3xl font-bold text-gradient-yellow">{t.common.currency} {getTotalPrice()}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -264,7 +266,7 @@ export default function CheckoutPage() {
                                     whileTap={{ scale: 0.98 }}
                                     className="w-full gradient-cyber px-8 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300"
                                 >
-                                    Place Order
+                                    {t.checkout.placeOrder}
                                 </motion.button>
 
                                 {/* Security Badge */}

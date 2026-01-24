@@ -145,6 +145,11 @@ export const en = {
         card: "Card Payment (Coming Soon)",
         placeOrder: "Place Order",
         orderSummary: "Order Summary",
+        phone: "Phone",
+        address: "Address",
+        city: "City",
+        postalCode: "Postal Code",
+        completeOrder: "Complete your order",
     },
 
     // Common
@@ -163,6 +168,15 @@ export const en = {
         filter: "Filter",
         sort: "Sort",
         all: "All",
+        backToStore: "Back to Store",
+    },
+
+    // Order Success
+    orderSuccess: {
+        title: "Order Placed!",
+        message: "Thank you for your purchase. Your 2070s style upgrade is being prepared.",
+        orderId: "Order ID",
+        emailSent: "A confirmation email has been sent to your quantum-link.",
     },
 };
 

@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 function OrderSuccessContent() {
+    const { t } = useLanguage();
     const searchParams = useSearchParams();
     const orderId = searchParams.get('orderId');
 
@@ -25,13 +28,13 @@ function OrderSuccessContent() {
                     <span className="text-5xl text-white">✓</span>
                 </motion.div>
 
-                <h1 className="text-4xl font-bold text-gradient mb-4">Order Placed!</h1>
+                <h1 className="text-4xl font-bold text-gradient mb-4">{t.orderSuccess.title}</h1>
                 <p className="text-gray-400 mb-8">
-                    Thank you for your purchase. Your 2070s style upgrade is being prepared.
+                    {t.orderSuccess.message}
                 </p>
 
                 <div className="glass rounded-xl p-6 mb-8">
-                    <p className="text-sm text-gray-400 mb-1">Order ID</p>
+                    <p className="text-sm text-gray-400 mb-1">{t.orderSuccess.orderId}</p>
                     <p className="font-mono text-xl font-bold text-gradient-yellow">{orderId || 'ORD-SYNC-2070'}</p>
                 </div>
 
@@ -42,11 +45,11 @@ function OrderSuccessContent() {
                             whileTap={{ scale: 0.95 }}
                             className="w-full gradient-cyber px-8 py-4 rounded-full font-semibold neon-glow-blue hover:neon-glow-purple transition-all duration-300"
                         >
-                            Back to Store
+                            {t.common.backToStore}
                         </motion.button>
                     </Link>
                     <p className="text-xs text-gray-500">
-                        A confirmation email has been sent to your quantum-link.
+                        {t.orderSuccess.emailSent}
                     </p>
                 </div>
             </motion.div>

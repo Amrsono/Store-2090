@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
 import Hero3D from '@/components/Hero3D';
 import FeaturesSection from '@/components/FeaturesSection';
 import ProductsSection from '@/components/ProductsSection';
@@ -10,8 +9,7 @@ import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen py-20 overflow-x-hidden">
-      <Navbar />
+    <main className="relative min-h-screen overflow-x-hidden">
 
       {/* Funky Background Blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">

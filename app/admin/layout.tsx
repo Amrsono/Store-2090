@@ -13,6 +13,7 @@ const navItems = [
     { name: 'Customers', href: '/admin/customers', icon: '👥' },
 ];
 
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useAuthStore } from '@/store/authStore';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -122,6 +123,7 @@ export default function AdminLayout({
                             {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
                         </h2>
                         <div className="flex items-center gap-4">
+                            <LanguageSwitcher />
                             <Link href="/">
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}

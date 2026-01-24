@@ -147,6 +147,11 @@ export const ar: Translations = {
         card: "الدفع بالبطاقة (قريباً)",
         placeOrder: "تأكيد الطلب",
         orderSummary: "ملخص الطلب",
+        phone: "رقم الهاتف",
+        address: "العنوان",
+        city: "المدينة",
+        postalCode: "الرمز البريدي",
+        completeOrder: "أكمل طلبك",
     },
 
     // Common
@@ -165,5 +170,14 @@ export const ar: Translations = {
         filter: "تصفية",
         sort: "ترتيب",
         all: "الكل",
+        backToStore: "العودة للمتجر",
+    },
+
+    // Order Success
+    orderSuccess: {
+        title: "تم تقديم الطلب!",
+        message: "شكراً لشرائك. جاري تجهيز ترقية أسلوب 2070 الخاصة بك.",
+        orderId: "رقم الطلب",
+        emailSent: "تم إرسال بريد تأكيد إلى رابطك الكمومي.",
     },
 };

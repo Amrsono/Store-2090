@@ -16,10 +16,10 @@ export default function Navbar() {
 
     const navLinks = [
         { name: t.nav.home, href: '/' },
-        { name: t.nav.shop, href: '#products' },
-        { name: t.nav.newArrivals, href: '#features' },
-        { name: t.nav.trending, href: '#dashboard' },
-        { name: t.nav.contact, href: '#contact' },
+        { name: t.nav.shop, href: '/#products' },
+        { name: t.nav.newArrivals, href: '/#features' },
+        { name: t.nav.trending, href: '/#dashboard' },
+        { name: t.nav.contact, href: '/#contact' },
     ];
 
     useEffect(() => {

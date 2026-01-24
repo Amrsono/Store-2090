@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ClientLayout from "@/components/ClientLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,9 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { LanguageProvider } from "@/contexts/LanguageContext";
-import FloatingCart from "@/components/FloatingCart";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,10 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} antialiased font-inter`}>
-        <LanguageProvider>
+        <ClientLayout>
           {children}
-          <FloatingCart />
-        </LanguageProvider>
+        </ClientLayout>
       </body>
     </html>
   );
