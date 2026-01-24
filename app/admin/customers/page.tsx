@@ -75,19 +75,23 @@ export default function AdminCustomers() {
                 });
 
                 const result = await response.json();
-                if (result.errors) throw new Error(result.errors[0].message);
+                if (result.errors) {
+                    console.error("GraphQL Errors:", result.errors);
+                    // Don't throw, try to use partial data
+                }
 
-                const users = result.data.allUsers;
-                const fetchedOrders = result.data.allOrders;
+                const users = result.data?.allUsers || [];
+                const fetchedOrders = result.data?.allOrders || [];
 
                 // Process customers
                 const processedCustomers = users.map((user: any) => {
-                    const userOrders = fetchedOrders.filter((o: any) => o.userId.toString() === user.id);
+                    const userIdString = String(user.id);
+                    const userOrders = fetchedOrders.filter((o: any) => String(o.userId) === userIdString);
                     const totalSpent = userOrders.reduce((sum: number, o: any) => sum + o.totalAmount, 0);
                     const lastOrder = userOrders.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
 
                     return {
-                        id: user.id,
+                        id: userIdString,
                         name: user.fullName || user.username,
                         email: user.email,
                         status: user.isActive ? 'active' : 'disabled',
@@ -99,13 +103,13 @@ export default function AdminCustomers() {
 
                 // Process orders for details view
                 const processedOrders = fetchedOrders.map((o: any) => ({
-                    id: o.id,
-                    userId: o.userId.toString(),
+                    id: String(o.id),
+                    userId: String(o.userId),
                     totalAmount: o.totalAmount,
-                    status: o.status,
+                    status: (o.status || '').toLowerCase(),
                     createdAt: o.createdAt,
                     paymentMethod: 'Quantum Credit', // Mock
-                    items: o.items.map((i: any) => ({
+                    items: (o.items || []).map((i: any) => ({
                         title: i.product?.title || 'Unknown Item',
                         quantity: i.quantity,
                         price: i.price
