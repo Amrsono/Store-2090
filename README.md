@@ -1,238 +1,328 @@
-# 🌌 Quantum Store - 2070s Minimalist Cyberpunk SaaS Platform
+# 🌌 Cyber Fashion - 2070s Cyberpunk Store
 
-A stunning, futuristic e-commerce platform built with cutting-edge web technologies, featuring interactive 3D elements, glassmorphism design, and quantum-inspired aesthetics.
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.4-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.3-blue)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-green)](https://fastapi.tiangolo.com/)
+[![GraphQL](https://img.shields.io/badge/GraphQL-Strawberry-pink)](https://strawberry.rocks/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue)](https://www.postgresql.org/)
 
-![Quantum Store](https://img.shields.io/badge/Next.js-16.1.4-black?style=for-the-badge&logo=next.js)
-![React](https://img.shields.io/badge/React-19.2.3-blue?style=for-the-badge&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=for-the-badge&logo=tailwind-css)
+A cutting-edge, full-stack e-commerce platform for futuristic fashion with a stunning 2070s Minimalist Cyberpunk aesthetic.
+
+![Cyber Fashion](https://img.shields.io/badge/Style-2070s_Cyberpunk-neon)
 
 ## ✨ Features
 
-### 🎨 Design Elements
-- **Dark Mode 2.0**: Deep obsidian backgrounds with high-contrast neon accents
-- **Glassmorphism**: Frosted glass effects with transparent layers and blur
-- **3D Interactive Elements**: React-Three-Fiber powered 3D objects in hero section
-- **Neon Glow Effects**: Electric blue, quantum purple, and plasma pink accents
-- **Gradient Mesh Backgrounds**: Multi-layered radial gradients for depth
-- **Bento Grid Layout**: Modern, responsive product card layouts
-- **Scroll Animations**: Smooth reveal-on-scroll effects with Framer Motion
+### 🎨 Frontend (Next.js)
+- **Interactive 3D Hero Section** - React-Three-Fiber with floating holographic spheres
+- **Glassmorphism UI** - Frosted glass effects throughout
+- **Neon Glow Effects** - Electric blue, quantum purple, and plasma pink accents
+- **Scroll Animations** - Smooth reveal-on-scroll with Framer Motion
+- **Bento Grid Layout** - Modern, responsive product displays
+- **Mobile-First Design** - Fully responsive on all devices
+- **Dark Mode 2.0** - Deep obsidian backgrounds with neon accents
 
-### 🚀 Technical Features
-- **Server-Side Rendering**: Next.js 15+ with App Router
-- **Type Safety**: Full TypeScript implementation
-- **60fps Animations**: Framer Motion for buttery smooth transitions
-- **Interactive 3D**: Three.js/React-Three-Fiber for immersive experiences
-- **Responsive Design**: Mobile-first approach with breakpoint optimization
-- **Performance Optimized**: Turbopack for lightning-fast development
+### 🚀 Backend (FastAPI + GraphQL)
+- **GraphQL API** - Efficient data fetching with Strawberry
+- **JWT Authentication** - Secure user authentication
+- **PostgreSQL Database** - Relational data storage
+- **SQLAlchemy ORM** - Type-safe database operations
+- **User Management** - Registration, login, role-based access
+- **Product Catalog** - Clothes, shoes, bags, and accessories
+- **Order System** - Complete e-commerce order flow
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16.1.4 (App Router)
-- **UI Library**: React 19.2.3
-- **Language**: TypeScript 5.0
-- **Styling**: Tailwind CSS v4
-- **3D Graphics**: React Three Fiber, Drei, Three.js
-- **Animations**: Framer Motion 12.29.0
-- **Utilities**: clsx, tailwind-merge
+- **Next.js 16.1.4** - React framework with SSR/SSG
+- **React 19.2.3** - UI library
+- **TypeScript 5.0** - Type safety
+- **Tailwind CSS v4** - Utility-first CSS
+- **React Three Fiber** - 3D graphics
+- **Framer Motion 12.29.0** - Animations
+- **Drei** - 3D helpers
+- **Three.js** - WebGL rendering
 
-### Backend (Ready for Integration)
-- **API**: FastAPI (Python) - Ready to implement
-- **GraphQL**: For efficient data fetching
-- **Database**: PostgreSQL - Ready to configure
-- **ORM**: SQLAlchemy - Ready to implement
+### Backend
+- **FastAPI 0.109.0** - Modern Python web framework
+- **Strawberry GraphQL 0.219.0** - GraphQL library
+- **PostgreSQL** - Database
+- **SQLAlchemy 2.0.25** - ORM
+- **JWT** - Authentication
+- **Bcrypt** - Password hashing
+- **Uvicorn** - ASGI server
 
-### Deployment
-- **Platform**: Vercel (Recommended)
-- **CI/CD**: GitHub Actions (Ready to configure)
-
-## 📦 Installation
+## � Quick Start
 
 ### Prerequisites
-- Node.js 20+ 
-- npm or yarn
+- Node.js 20+
+- Python 3.11+
+- PostgreSQL 15+
+- Git
 
-### Setup
+### 1. Clone Repository
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd cyberpunk-store
-   ```
+```bash
+git clone https://github.com/Amrsono/Store-2090.git
+cd Store-2090
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Frontend Setup
 
-3. **Run development server**
-   ```bash
-   npm run dev
-   ```
+```bash
+# Install dependencies
+npm install
 
-4. **Open in browser**
-   ```
-   http://localhost:3000
-   ```
+# Run development server
+npm run dev
+```
 
-## 🎯 Project Structure
+Frontend will be available at **http://localhost:3000**
+
+### 3. Backend Setup
+
+```bash
+# Navigate to backend
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+copy .env.example .env
+
+# Edit .env with your database credentials
+# DATABASE_URL=postgresql://postgres:password@localhost:5432/cyber_fashion
+
+# Create PostgreSQL database
+createdb cyber_fashion
+
+# Run server
+uvicorn app.main:app --reload --port 8000
+```
+
+Backend will be available at:
+- **API**: http://localhost:8000
+- **GraphQL Playground**: http://localhost:8000/graphql
+- **API Docs**: http://localhost:8000/docs
+
+### 4. Seed Database (Optional)
+
+```bash
+cd backend
+python -m app.seed
+```
+
+## 📁 Project Structure
 
 ```
-cyberpunk-store/
-├── app/
-│   ├── layout.tsx          # Root layout with metadata
-│   ├── page.tsx            # Main homepage
-│   └── globals.css         # Global styles & custom utilities
-├── components/
-│   ├── Navbar.tsx          # Responsive navigation with glassmorphism
-│   ├── Hero3D.tsx          # Interactive 3D hero section
-│   ├── ProductsSection.tsx # Bento grid products with animations
-│   ├── DashboardSection.tsx# Analytics dashboard visualization
-│   └── Footer.tsx          # Footer with newsletter signup
-├── lib/
-│   └── utils.ts            # Utility functions (cn helper)
-└── public/                 # Static assets
+Store-2090/
+├── app/                    # Next.js app directory
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   └── globals.css        # Global styles
+├── components/            # React components
+│   ├── Navbar.tsx
+│   ├── Hero3D.tsx
+│   ├── FeaturesSection.tsx
+│   ├── ProductsSection.tsx
+│   ├── DashboardSection.tsx
+│   └── Footer.tsx
+├── lib/                   # Utilities
+│   └── utils.ts
+├── backend/               # FastAPI backend
+│   ├── app/
+│   │   ├── models/       # Database models
+│   │   ├── graphql/      # GraphQL schema
+│   │   ├── utils/        # Auth utilities
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── main.py
+│   │   └── seed.py
+│   ├── requirements.txt
+│   └── README.md
+├── public/               # Static assets
+├── README.md            # This file
+├── BACKEND_GUIDE.md     # Backend implementation guide
+├── DEPLOYMENT.md        # Deployment instructions
+├── PROJECT_SUMMARY.md   # Complete project summary
+└── QUICKSTART.md        # Quick start guide
 ```
 
 ## 🎨 Design System
 
 ### Color Palette
 ```css
---obsidian: #0a0a0f;          /* Deep background */
---deep-space: #12121a;        /* Secondary background */
---neon-blue: #00d4ff;         /* Primary accent */
---quantum-purple: #b300ff;    /* Secondary accent */
---plasma-pink: #ff00ff;       /* Tertiary accent */
---electric-cyan: #00fff5;     /* Highlight */
---solar-yellow: #ffeb3b;      /* Warning/Info */
---cyber-green: #00ff88;       /* Success */
+--obsidian: #0a0a0f        /* Deep background */
+--deep-space: #12121a      /* Secondary background */
+--neon-blue: #00d4ff       /* Primary accent */
+--quantum-purple: #b300ff  /* Secondary accent */
+--plasma-pink: #ff00ff     /* Tertiary accent */
+--electric-cyan: #00fff5   /* Highlight */
+--solar-yellow: #ffeb3b    /* Warning/Info */
+--cyber-green: #00ff88     /* Success */
 ```
 
 ### Custom Utilities
 - `.glass` - Glassmorphism effect
-- `.glass-strong` - Enhanced glassmorphism
-- `.neon-glow-blue` - Blue neon glow
-- `.neon-glow-purple` - Purple neon glow
+- `.neon-glow-blue` - Neon blue glow
 - `.gradient-cyber` - Cyberpunk gradient
-- `.gradient-mesh` - Multi-point gradient mesh
-- `.text-gradient` - Gradient text effect
-- `.hover-lift` - Lift on hover animation
+- `.text-gradient` - Gradient text
+- `.hover-lift` - Lift on hover
+- `.animate-float` - Floating animation
 
-## 🚀 Deployment
+## � Database Schema
 
-### Deploy to Vercel (Recommended)
+### Users
+- Authentication and profile data
+- Admin role support
 
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git push origin main
-   ```
+### Products
+- Title, description, price
+- Category (Clothes/Shoes/Bags/Accessories)
+- Stock management
+- Image URLs
 
-2. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will auto-detect Next.js
-   - Click "Deploy"
+### Orders
+- User orders with status tracking
+- Shipping information
 
-### Environment Variables
-Create a `.env.local` file for local development:
-```env
-# Add your environment variables here
-# NEXT_PUBLIC_API_URL=your_api_url
-```
+### OrderItems
+- Individual items in orders
+- Quantity and pricing
 
-## 📱 Responsive Breakpoints
+## 🔐 Authentication
 
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
-
-## 🎭 Key Components
-
-### Hero3D
-Interactive 3D scene with:
-- Animated floating spheres
-- Cyber grid perspective
-- Auto-rotating camera
-- Mouse hover interactions
-
-### ProductsSection
-Bento grid layout featuring:
-- Scroll-triggered animations
-- Glassmorphic product cards
-- Dynamic sizing (small/medium/large)
-- Gradient hover effects
-
-### DashboardSection
-Analytics visualization with:
-- Animated stat cards
-- Interactive bar charts
-- Activity feed
-- Top products tracker
-
-## 🔧 Customization
-
-### Adding New Products
-Edit `components/ProductsSection.tsx`:
-```typescript
-const products: Product[] = [
-  {
-    id: 7,
-    title: 'Your Product',
-    description: 'Product description',
-    price: '$99/mo',
-    category: 'Category',
-    gradient: 'from-[#00d4ff] to-[#b300ff]',
-    size: 'medium',
-  },
-  // ... more products
-];
-```
-
-### Modifying Colors
-Edit `app/globals.css`:
-```css
-:root {
-  --your-color: #hexcode;
+### Register
+```graphql
+mutation {
+  register(input: {
+    email: "user@cyber.com"
+    username: "cyberfan"
+    password: "SecurePass123!"
+  }) {
+    accessToken
+    user { id email }
+  }
 }
 ```
 
-## 📊 Performance
+### Login
+```graphql
+mutation {
+  login(input: {
+    email: "user@cyber.com"
+    password: "SecurePass123!"
+  }) {
+    accessToken
+    user { id email isAdmin }
+  }
+}
+```
 
-- **Lighthouse Score**: 95+ (Performance)
-- **First Contentful Paint**: < 1.5s
-- **Time to Interactive**: < 3s
-- **Cumulative Layout Shift**: < 0.1
+## 📦 GraphQL API
+
+### Get Products
+```graphql
+query {
+  products(category: CLOTHES) {
+    id
+    title
+    price
+    category
+    stock
+  }
+}
+```
+
+### Create Order
+```graphql
+mutation {
+  createOrder(userId: 1, input: {
+    items: [{ productId: 1, quantity: 2 }]
+    shippingAddress: "123 Cyber St"
+  }) {
+    id
+    totalAmount
+    status
+  }
+}
+```
+
+## 🚀 Deployment
+
+### Frontend (Vercel)
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+### Backend (Docker)
+```bash
+cd backend
+docker build -t cyber-fashion-api .
+docker run -p 8000:8000 cyber-fashion-api
+```
+
+See `DEPLOYMENT.md` for detailed instructions.
+
+## 📚 Documentation
+
+- **README.md** - This file
+- **BACKEND_GUIDE.md** - Complete backend setup
+- **DEPLOYMENT.md** - Deployment guide
+- **PROJECT_SUMMARY.md** - Feature summary
+- **QUICKSTART.md** - Quick start guide
+- **backend/README.md** - Backend API docs
+
+## 🎯 Features Roadmap
+
+- [x] Frontend UI with 3D elements
+- [x] Product catalog
+- [x] User authentication
+- [x] Order system
+- [x] GraphQL API
+- [ ] Shopping cart
+- [ ] Payment integration (Stripe)
+- [ ] Admin dashboard
+- [ ] Product reviews
+- [ ] Wishlist
+- [ ] Email notifications
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
+## � License
 
 This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- **Design Inspiration**: 2070s Cyberpunk aesthetic
-- **3D Graphics**: Three.js community
-- **Animation**: Framer Motion team
-- **Framework**: Next.js team at Vercel
+- Next.js team for the amazing framework
+- FastAPI for the modern Python backend
+- Strawberry for GraphQL implementation
+- React Three Fiber for 3D capabilities
+- Framer Motion for smooth animations
 
-## 📞 Support
+## 📞 Contact
 
-For support, email support@quantumstore.dev or open an issue on GitHub.
+- GitHub: [@Amrsono](https://github.com/Amrsono)
+- Repository: [Store-2090](https://github.com/Amrsono/Store-2090)
 
 ---
 
-**Built with ⚡ by the Quantum Team**
+**Built with ⚡ for the future of fashion**
 
-*Experience the future of digital commerce*
+*Experience 2070s style today* 🌌
