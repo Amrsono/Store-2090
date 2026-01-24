@@ -80,6 +80,7 @@ class Query:
             full_name=user.full_name,
             is_active=user.is_active,
             is_admin=user.is_admin,
+            email_verified=user.email_verified,
             created_at=user.created_at
         )
     
@@ -185,6 +186,7 @@ class Query:
                 full_name=u.full_name,
                 is_active=u.is_active,
                 is_admin=u.is_admin,
+                email_verified=u.email_verified,
                 created_at=u.created_at
             )
             for u in users
