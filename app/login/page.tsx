@@ -44,7 +44,7 @@ export default function LoginPage() {
                 password,
             };
 
-            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql';
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
             console.log('Attempting to login via GraphQL at:', url);
 
             const response = await fetch(url, {

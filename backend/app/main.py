@@ -57,6 +57,8 @@ app.add_middleware(
 # GraphQL Router
 graphql_app = GraphQLRouter(schema)
 app.include_router(graphql_app, prefix="/graphql")
+# Also mount at /api/graphql to catch unstripped requests
+app.include_router(graphql_app, prefix="/api/graphql")
 
 
 @app.get("/")
