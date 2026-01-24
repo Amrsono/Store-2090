@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProductStore, Product } from '@/store/productStore';
 import { cn } from '@/lib/utils';
@@ -8,11 +8,60 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function AdminProducts() {
     const { t } = useLanguage();
-    const { products, addProduct, updateProduct, deleteProduct } = useProductStore();
+    const { products, addProduct, updateProduct, deleteProduct, setProducts } = useProductStore();
     const [isEditing, setIsEditing] = useState<number | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [formData, setFormData] = useState<Partial<Product>>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const query = `
+                query GetProducts {
+                    products {
+                        id
+                        title
+                        description
+                        price
+                        category
+                        gradient
+                        size
+                        stock
+                        imageUrl
+                    }
+                }
+            `;
+
+            try {
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                if (result.data?.products) {
+                    const mappedProducts = result.data.products.map((p: any) => ({
+                        ...p,
+                        image: p.imageUrl, // Map imageUrl to image
+                        category: capitalizeFirstLetter(p.category) // Ensure category casing matches
+                    }));
+                    setProducts(mappedProducts);
+                }
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, [setProducts]);
+
+    // Helper to fix category casing if needed
+    const capitalizeFirstLetter = (string: string) => {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

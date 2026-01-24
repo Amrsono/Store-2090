@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -119,7 +119,55 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
 export default function ProductsSection() {
     const { t } = useLanguage();
-    const { products } = useProductStore();
+    const { products, setProducts } = useProductStore();
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const query = `
+                query GetProducts {
+                    products {
+                        id
+                        title
+                        description
+                        price
+                        category
+                        gradient
+                        size
+                        stock
+                        imageUrl
+                    }
+                }
+            `;
+
+            try {
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                if (result.data?.products) {
+                    const mappedProducts = result.data.products.map((p: any) => ({
+                        ...p,
+                        image: p.imageUrl,
+                        category: capitalizeFirstLetter(p.category)
+                    }));
+                    setProducts(mappedProducts);
+                }
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, [setProducts]);
+
+    const capitalizeFirstLetter = (string: string) => {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    };
 
     return (
         <div id="products" className="relative">

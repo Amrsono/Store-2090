@@ -19,6 +19,7 @@ interface ProductStore {
     updateProduct: (id: number, product: Partial<Product>) => void;
     deleteProduct: (id: number) => void;
     setStock: (id: number, stock: number) => void;
+    setProducts: (products: Product[]) => void;
 }
 
 const initialProducts: Product[] = [
@@ -106,6 +107,7 @@ export const useProductStore = create<ProductStore>()(
             setStock: (id, stock) => set((state) => ({
                 products: state.products.map((p) => p.id === id ? { ...p, stock } : p)
             })),
+            setProducts: (products) => set({ products }),
         }),
         {
             name: 'cyber-products',
