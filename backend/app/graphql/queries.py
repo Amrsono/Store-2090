@@ -124,3 +124,64 @@ class Query:
             )
             for o in orders
         ]
+
+    @strawberry.field
+    def all_orders(self) -> List[Order]:
+        """Get all orders (Admin only)"""
+        db: Session = next(get_db())
+        orders = db.query(OrderModel).order_by(OrderModel.created_at.desc()).all()
+        
+        from app.graphql.types import OrderItem, Product
+        
+        return [
+            Order(
+                id=o.id,
+                user_id=o.user_id,
+                total_amount=o.total_amount,
+                status=o.status,
+                shipping_address=o.shipping_address,
+                created_at=o.created_at,
+                items=[
+                    OrderItem(
+                        id=i.id,
+                        product_id=i.product_id,
+                        quantity=i.quantity,
+                        price=i.price,
+                        product=Product(
+                            id=i.product.id,
+                            title=i.product.title,
+                            description=i.product.description,
+                            price=i.product.price,
+                            category=ProductCategory[i.product.category.name],
+                            gradient=i.product.gradient,
+                            size=i.product.size,
+                            stock=i.product.stock,
+                            image_url=i.product.image_url,
+                            is_active=bool(i.product.is_active),
+                            created_at=i.product.created_at
+                        ) if i.product else None
+                    )
+                    for i in o.items
+                ]
+            )
+            for o in orders
+        ]
+
+    @strawberry.field
+    def all_users(self) -> List[User]:
+        """Get all users (Admin only)"""
+        db: Session = next(get_db())
+        users = db.query(UserModel).order_by(UserModel.created_at.desc()).all()
+        
+        return [
+            User(
+                id=u.id,
+                email=u.email,
+                username=u.username,
+                full_name=u.full_name,
+                is_active=u.is_active,
+                is_admin=u.is_admin,
+                created_at=u.created_at
+            )
+            for u in users
+        ]

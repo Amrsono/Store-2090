@@ -1,36 +1,162 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCustomerStore, Customer } from '@/store/customerStore';
-import { mockOrders } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+interface Customer {
+    id: string;
+    name: string;
+    email: string;
+    status: 'active' | 'disabled';
+    orderCount: number;
+    totalSpent: number;
+    lastOrderDate: string;
+}
+
+interface Order {
+    id: string;
+    userId: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    paymentMethod: string;
+    items: Array<{
+        title: string;
+        quantity: number;
+        price: number;
+    }>;
+}
+
 export default function AdminCustomers() {
     const { t } = useLanguage();
-    const { customers, updateCustomer, toggleCustomerStatus, deleteCustomer } = useCustomerStore();
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [formData, setFormData] = useState<Partial<Customer>>({});
 
-    const customerOrders = (email: string) => {
-        return mockOrders.filter(order => order.customerEmail === email);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const query = `
+                    query AdminCustomers {
+                        allUsers {
+                            id
+                            username
+                            fullName
+                            email
+                            isActive
+                        }
+                        allOrders {
+                            id
+                            userId
+                            totalAmount
+                            status
+                            createdAt
+                            items {
+                                quantity
+                                price
+                                product {
+                                    title
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                if (result.errors) throw new Error(result.errors[0].message);
+
+                const users = result.data.allUsers;
+                const fetchedOrders = result.data.allOrders;
+
+                // Process customers
+                const processedCustomers = users.map((user: any) => {
+                    const userOrders = fetchedOrders.filter((o: any) => o.userId.toString() === user.id);
+                    const totalSpent = userOrders.reduce((sum: number, o: any) => sum + o.totalAmount, 0);
+                    const lastOrder = userOrders.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+
+                    return {
+                        id: user.id,
+                        name: user.fullName || user.username,
+                        email: user.email,
+                        status: user.isActive ? 'active' : 'disabled',
+                        orderCount: userOrders.length,
+                        totalSpent,
+                        lastOrderDate: lastOrder ? new Date(lastOrder.createdAt).toLocaleDateString() : 'Never',
+                    };
+                });
+
+                // Process orders for details view
+                const processedOrders = fetchedOrders.map((o: any) => ({
+                    id: o.id,
+                    userId: o.userId.toString(),
+                    totalAmount: o.totalAmount,
+                    status: o.status,
+                    createdAt: o.createdAt,
+                    paymentMethod: 'Quantum Credit', // Mock
+                    items: o.items.map((i: any) => ({
+                        title: i.product?.title || 'Unknown Item',
+                        quantity: i.quantity,
+                        price: i.price
+                    }))
+                }));
+
+                setCustomers(processedCustomers);
+                setOrders(processedOrders);
+
+            } catch (err) {
+                console.error("Failed to fetch customers:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const customerOrders = (customerId: string) => {
+        return orders.filter(order => order.userId === customerId);
     };
 
     const handleEditSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // Optimistic update
         if (isEditing) {
-            updateCustomer(isEditing, formData);
+            setCustomers(customers.map(c => c.id === isEditing ? { ...c, ...formData } : c));
             setIsEditing(null);
             setFormData({});
         }
+        // TODO: Persist to backend via mutation
     };
 
     const startEdit = (customer: Customer) => {
         setIsEditing(customer.id);
         setFormData(customer);
     };
+
+    const toggleCustomerStatus = (customerId: string) => {
+        // Optimistic update
+        setCustomers(customers.map(c => {
+            if (c.id === customerId) {
+                return { ...c, status: c.status === 'active' ? 'disabled' : 'active' };
+            }
+            return c;
+        }));
+        // TODO: Persist via mutation
+    };
+
+    if (loading) return <div className="p-10 text-center text-[var(--neon-blue)] font-mono animate-pulse">SCANNING BIOMETRICS...</div>;
 
     return (
         <div className="space-y-8">
@@ -72,7 +198,7 @@ export default function AdminCustomers() {
                                     <input
                                         type="text"
                                         required
-                                        value={formData.name}
+                                        value={formData.name || ''}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-6 py-4 rounded-2xl glass bg-white/5 border border-white/10 focus:border-[var(--neon-blue)] focus:outline-none font-bold"
                                     />
@@ -82,7 +208,7 @@ export default function AdminCustomers() {
                                     <input
                                         type="email"
                                         required
-                                        value={formData.email}
+                                        value={formData.email || ''}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="w-full px-6 py-4 rounded-2xl glass bg-white/5 border border-white/10 focus:border-[var(--neon-blue)] focus:outline-none font-bold"
                                     />
@@ -219,8 +345,8 @@ export default function AdminCustomers() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {customerOrders(selectedCustomer.email).length > 0 ? (
-                                customerOrders(selectedCustomer.email).map((order) => (
+                            {customerOrders(selectedCustomer.id).length > 0 ? (
+                                customerOrders(selectedCustomer.id).map((order) => (
                                     <div key={order.id} className="glass p-6 rounded-[2rem] border border-white/5 hover:border-white/20 transition-all group overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-4">
                                             <span className={cn(

@@ -1,16 +1,113 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { mockOrders } from '@/lib/mockData';
-import { Order, OrderStatus } from '@/types/order';
 import { cn } from '@/lib/utils';
 
+// Define types locally to ensure they match our GraphQL response
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+export interface OrderItem {
+    id: string;
+    product: {
+        title: string;
+        price: number;
+    };
+    quantity: number;
+    price: number;
+}
+
+export interface Order {
+    id: string;
+    userId: string;
+    totalAmount: number;
+    status: OrderStatus;
+    shippingAddress: string;
+    createdAt: string;
+    updatedAt: string;
+    items: OrderItem[];
+    // Enriched fields
+    customerName: string;
+    customerEmail: string;
+    paymentMethod: string; // We might need to mock this if not in DB, assuming 'credit_card' or derived
+}
+
 export default function OrdersPage() {
-    const [orders, setOrders] = useState<Order[]>(mockOrders);
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [filterStatus, setFilterStatus] = useState<OrderStatus | 'all'>('all');
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const query = `
+                    query AdminOrders {
+                        allOrders {
+                            id
+                            userId
+                            totalAmount
+                            status
+                            shippingAddress
+                            createdAt
+                            items {
+                                id
+                                quantity
+                                price
+                                product {
+                                    title
+                                    price
+                                }
+                            }
+                        }
+                        allUsers {
+                            id
+                            username
+                            email
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                if (result.errors) throw new Error(result.errors[0].message);
+
+                const rawOrders = result.data.allOrders;
+                const users = result.data.allUsers;
+
+                // Enrich orders with user data
+                const enrichedOrders = rawOrders.map((order: any) => {
+                    const user = users.find((u: any) => u.id === order.userId.toString());
+                    return {
+                        ...order,
+                        updatedAt: order.createdAt, // Fallback
+                        customerName: user?.username || 'Unknown',
+                        customerEmail: user?.email || 'Unknown',
+                        paymentMethod: 'Quantum Credit', // Mock for display
+                        items: order.items.map((item: any) => ({
+                            ...item,
+                            product: item.product || { title: 'Unknown Product', price: 0 }
+                        }))
+                    };
+                });
+
+                setOrders(enrichedOrders);
+            } catch (err) {
+                console.error("Failed to fetch orders:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     const filteredOrders = orders.filter(order => {
         const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
@@ -21,15 +118,21 @@ export default function OrdersPage() {
         return matchesStatus && matchesSearch;
     });
 
-    const updateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
-        setOrders(orders.map(order =>
+    const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+        // Optimistic update
+        const updatedOrders = orders.map(order =>
             order.id === orderId
-                ? { ...order, status: newStatus, updatedAt: new Date() }
+                ? { ...order, status: newStatus, updatedAt: new Date().toISOString() }
                 : order
-        ));
+        );
+        setOrders(updatedOrders);
+
         if (selectedOrder?.id === orderId) {
-            setSelectedOrder({ ...selectedOrder, status: newStatus, updatedAt: new Date() });
+            setSelectedOrder({ ...selectedOrder, status: newStatus, updatedAt: new Date().toISOString() });
         }
+
+        // TODO: Implement mutation to update status on backend
+        // For now, it just updates locally to show UI works
     };
 
     const statusOptions: { value: OrderStatus | 'all'; label: string; color: string }[] = [
@@ -40,6 +143,8 @@ export default function OrdersPage() {
         { value: 'delivered', label: 'Delivered', color: 'from-[#00ff88] to-[#00d4ff]' },
         { value: 'cancelled', label: 'Cancelled', color: 'from-[#ff00ff] to-[#ff0000]' },
     ];
+
+    if (loading) return <div className="p-10 text-center text-[var(--neon-blue)] font-mono animate-pulse">DECRYPTING ORDER DATA...</div>;
 
     return (
         <div className="space-y-6">
@@ -237,7 +342,7 @@ export default function OrdersPage() {
                                         {selectedOrder.items.map((item) => (
                                             <div key={item.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
                                                 <div className="flex-1">
-                                                    <p className="font-medium">{item.title}</p>
+                                                    <p className="font-medium">{item.product?.title || 'Unknown Product'}</p>
                                                     <p className="text-sm text-gray-400">Quantity: {item.quantity}</p>
                                                 </div>
                                                 <p className="font-bold text-gradient-yellow">${item.price * item.quantity}</p>

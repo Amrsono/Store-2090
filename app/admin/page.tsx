@@ -1,15 +1,126 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { mockOrders, getOrderStats } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 type TimeRange = 'daily' | 'weekly' | 'monthly';
 
+interface DashboardStats {
+    totalRevenue: number;
+    totalOrders: number;
+    pendingOrders: number;
+    deliveredOrders: number;
+    processingOrders: number;
+    shippedOrders: number;
+    cancelledOrders: number;
+}
+
+interface Order {
+    id: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    user: {
+        id: string;
+        username: string;
+        email: string;
+    } | null;
+}
+
 export default function AdminDashboard() {
     const [timeRange, setTimeRange] = useState<TimeRange>('daily');
-    const stats = getOrderStats(mockOrders);
+    const [stats, setStats] = useState<DashboardStats>({
+        totalRevenue: 0,
+        totalOrders: 0,
+        pendingOrders: 0,
+        deliveredOrders: 0,
+        processingOrders: 0,
+        shippedOrders: 0,
+        cancelledOrders: 0
+    });
+    const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const query = `
+                    query AdminData {
+                        allOrders {
+                            id
+                            userId
+                            totalAmount
+                            status
+                            createdAt
+                        }
+                        allUsers {
+                            id
+                            username
+                            email
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query }),
+                });
+
+                const result = await response.json();
+                if (result.errors) throw new Error(result.errors[0].message);
+
+                const orders = result.data.allOrders;
+                const users = result.data.allUsers;
+
+                // Process Stats
+                const newStats = orders.reduce((acc: DashboardStats, order: any) => {
+                    acc.totalOrders++;
+                    acc.totalRevenue += order.totalAmount;
+
+                    const status = order.status.toLowerCase();
+                    if (status === 'pending') acc.pendingOrders++;
+                    else if (status === 'delivered') acc.deliveredOrders++;
+                    else if (status === 'processing') acc.processingOrders++;
+                    else if (status === 'shipped') acc.shippedOrders++;
+                    else if (status === 'cancelled') acc.cancelledOrders++;
+
+                    return acc;
+                }, {
+                    totalRevenue: 0,
+                    totalOrders: 0,
+                    pendingOrders: 0,
+                    deliveredOrders: 0,
+                    processingOrders: 0,
+                    shippedOrders: 0,
+                    cancelledOrders: 0,
+                });
+
+                setStats(newStats);
+
+                // Process Recent Orders with User Info
+                const ordersWithUsers = orders.slice(0, 10).map((order: any) => {
+                    const user = users.find((u: any) => u.id === order.userId.toString()) || null;
+                    return {
+                        ...order,
+                        user
+                    };
+                });
+                setRecentOrders(ordersWithUsers);
+
+            } catch (error) {
+                console.error("Failed to fetch admin data", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const statCards = [
         {
@@ -46,7 +157,9 @@ export default function AdminDashboard() {
         },
     ];
 
-    const recentOrders = mockOrders.slice(0, 5);
+    if (loading) {
+        return <div className="p-10 text-center text-[var(--neon-blue)] font-mono animate-pulse">SYNCING WITH THE GRID...</div>;
+    }
 
     return (
         <div className="space-y-6">
@@ -143,11 +256,11 @@ export default function AdminDashboard() {
                     <h3 className="text-xl font-bold text-gradient mb-4">Order Status</h3>
                     <div className="space-y-4">
                         {[
-                            { label: 'Pending', value: stats.pendingOrders, color: 'from-[#ffeb3b] to-[#ff00ff]', percent: (stats.pendingOrders / stats.totalOrders) * 100 },
-                            { label: 'Processing', value: stats.processingOrders, color: 'from-[#00d4ff] to-[#b300ff]', percent: (stats.processingOrders / stats.totalOrders) * 100 },
-                            { label: 'Shipped', value: stats.shippedOrders, color: 'from-[#b300ff] to-[#ff00ff]', percent: (stats.shippedOrders / stats.totalOrders) * 100 },
-                            { label: 'Delivered', value: stats.deliveredOrders, color: 'from-[#00ff88] to-[#00d4ff]', percent: (stats.deliveredOrders / stats.totalOrders) * 100 },
-                            { label: 'Cancelled', value: stats.cancelledOrders, color: 'from-[#ff00ff] to-[#ff0000]', percent: (stats.cancelledOrders / stats.totalOrders) * 100 },
+                            { label: 'Pending', value: stats.pendingOrders, color: 'from-[#ffeb3b] to-[#ff00ff]', percent: (stats.pendingOrders / stats.totalOrders) * 100 || 0 },
+                            { label: 'Processing', value: stats.processingOrders, color: 'from-[#00d4ff] to-[#b300ff]', percent: (stats.processingOrders / stats.totalOrders) * 100 || 0 },
+                            { label: 'Shipped', value: stats.shippedOrders, color: 'from-[#b300ff] to-[#ff00ff]', percent: (stats.shippedOrders / stats.totalOrders) * 100 || 0 },
+                            { label: 'Delivered', value: stats.deliveredOrders, color: 'from-[#00ff88] to-[#00d4ff]', percent: (stats.deliveredOrders / stats.totalOrders) * 100 || 0 },
+                            { label: 'Cancelled', value: stats.cancelledOrders, color: 'from-[#ff00ff] to-[#ff0000]', percent: (stats.cancelledOrders / stats.totalOrders) * 100 || 0 },
                         ].map((item, i) => (
                             <motion.div
                                 key={item.label}
@@ -180,7 +293,17 @@ export default function AdminDashboard() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="glass-strong rounded-2xl p-6"
             >
-                <h3 className="text-xl font-bold text-gradient mb-6">Recent Orders</h3>
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gradient">Recent Orders</h3>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => router.push('/admin/orders')}
+                        className="text-xs font-bold uppercase tracking-widest text-[var(--neon-blue)] hover:text-white transition-colors"
+                    >
+                        View All
+                    </motion.button>
+                </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
@@ -206,8 +329,8 @@ export default function AdminDashboard() {
                                     </td>
                                     <td className="py-4 px-4">
                                         <div>
-                                            <p className="font-medium">{order.customerName}</p>
-                                            <p className="text-xs text-gray-400">{order.customerEmail}</p>
+                                            <p className="font-medium">{order.user?.username || 'Unknown'}</p>
+                                            <p className="text-xs text-gray-400">{order.user?.email || 'No Email'}</p>
                                         </div>
                                     </td>
                                     <td className="py-4 px-4">
