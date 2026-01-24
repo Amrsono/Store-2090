@@ -55,6 +55,18 @@ class handler(BaseHTTPRequestHandler):
             except Exception as e:
                 print(f"Skipping products.image_url update: {str(e)}")
 
+            # 4. Add payment_method to orders
+            try:
+                with engine.begin() as connection:
+                    connection.execute(text("ALTER TABLE orders ADD COLUMN payment_method VARCHAR(50) DEFAULT 'Cash'"))
+                    print("Added payment_method")
+            except Exception as e:
+                e_str = str(e).lower()
+                if "already exists" in e_str or "duplicate column" in e_str:
+                    print("'payment_method' already exists")
+                else:
+                    print(f"Error adding payment_method: {e}")
+
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.send_header('Access-Control-Allow-Origin', '*')
