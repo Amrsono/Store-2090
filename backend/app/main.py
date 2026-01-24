@@ -26,6 +26,29 @@ app = FastAPI(
     root_path=root_path
 )
 
+@app.on_event("startup")
+async def startup_db_check():
+    try:
+        from sqlalchemy import text
+        print("STARTUP: Checking database schema...")
+        
+        # Update products.image_url to TEXT (Postgres only) to support large Base64 images
+        try:
+            with engine.connect() as connection:
+                # Check if using Postgres
+                is_postgres = "postgres" in str(engine.url)
+                if is_postgres:
+                    print("STARTUP: Detected Postgres, checking Column Types...")
+                    with connection.begin():
+                        connection.execute(text("ALTER TABLE products ALTER COLUMN image_url TYPE TEXT"))
+                    print("STARTUP: Updated products.image_url to TEXT")
+        except Exception as e:
+            # Check for common errors that we can ignore (like if table doesn't exist yet)
+            print(f"STARTUP UPDATE NOTE: {e}")
+            
+    except Exception as e:
+        print(f"STARTUP ERROR: {e}")
+
 @app.middleware("http")
 async def catch_exceptions_middleware(request: Request, call_next):
     try:

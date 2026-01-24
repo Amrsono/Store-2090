@@ -358,7 +358,7 @@ export default function AdminProducts() {
 
                                 <div className="flex gap-4 md:col-span-2 pt-4">
                                     <button type="submit" className="flex-1 gradient-cyber py-4 rounded-2xl font-black text-lg uppercase tracking-widest neon-glow-purple transition-all duration-300 shadow-2xl">
-                                        {isEditing ? 'Sync Changes' : 'Add Product'}
+                                        {isEditing ? 'Save Changes' : 'Add Product'}
                                     </button>
                                 </div>
                             </form>

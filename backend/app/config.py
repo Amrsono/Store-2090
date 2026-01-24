@@ -10,7 +10,18 @@ class Settings(BaseSettings):
     @property
     def sync_database_url(self) -> str:
         import os
-        return os.getenv("POSTGRES_URL", os.getenv("DATABASE_URL", self.DATABASE_URL))
+        postgres_url = os.getenv("POSTGRES_URL")
+        database_url = os.getenv("DATABASE_URL")
+        
+        if postgres_url:
+            print("CONFIG: Using POSTGRES_URL")
+            return postgres_url
+        if database_url:
+            print(f"CONFIG: Using DATABASE_URL (Starts with: {database_url[:10]}...)")
+            return database_url
+            
+        print("CONFIG: Using Default Localhost URL")
+        return self.DATABASE_URL
 
     SECRET_KEY: str = "your-secret-key-change-this-in-production-min-32-chars"
     ALGORITHM: str = "HS256"
