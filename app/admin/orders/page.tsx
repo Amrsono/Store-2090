@@ -77,21 +77,27 @@ export default function OrdersPage() {
                 });
 
                 const result = await response.json();
-                if (result.errors) throw new Error(result.errors[0].message);
+                if (result.errors) {
+                    console.error("GraphQL Errors:", result.errors);
+                    // Don't throw immediately, try to use partial data if any
+                }
 
-                const rawOrders = result.data.allOrders;
-                const users = result.data.allUsers;
+                const rawOrders = result.data?.allOrders || [];
+                const users = result.data?.allUsers || [];
 
                 // Enrich orders with user data
                 const enrichedOrders = rawOrders.map((order: any) => {
-                    const user = users.find((u: any) => u.id === order.userId.toString());
+                    // Safe ID conversion
+                    const userIdString = order.userId !== undefined && order.userId !== null ? String(order.userId) : '';
+                    const user = users.find((u: any) => String(u.id) === userIdString);
+
                     return {
                         ...order,
                         updatedAt: order.createdAt, // Fallback
-                        customerName: user?.username || 'Unknown',
-                        customerEmail: user?.email || 'Unknown',
+                        customerName: user?.username || 'Unknown Guest',
+                        customerEmail: user?.email || 'No Email',
                         paymentMethod: 'Quantum Credit', // Mock for display
-                        items: order.items.map((item: any) => ({
+                        items: (order.items || []).map((item: any) => ({
                             ...item,
                             product: item.product || { title: 'Unknown Product', price: 0 }
                         }))
