@@ -74,10 +74,13 @@ export default function MyOrdersPage() {
                 const result = await response.json();
 
                 if (result.errors) {
-                    throw new Error(result.errors[0].message);
+                    console.error("GraphQL Errors:", result.errors);
+                    // Handle partial data if available
                 }
 
-                setOrders(result.data.myOrders);
+                // Safety check: ensure myOrders exists and is an array
+                const fetchedOrders = Array.isArray(result.data?.myOrders) ? result.data.myOrders : [];
+                setOrders(fetchedOrders);
             } catch (err: any) {
                 console.error("Order fetch error:", err);
                 setError(err.message || 'Failed to fetch orders');
@@ -197,7 +200,7 @@ export default function MyOrdersPage() {
                                 </div>
 
                                 <div className="space-y-4 relative z-10">
-                                    {order.items.map((item) => (
+                                    {(order.items || []).map((item) => (
                                         <div key={item.id} className="flex items-center gap-4 py-2">
                                             <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
                                                 {item.product?.imageUrl ? (
