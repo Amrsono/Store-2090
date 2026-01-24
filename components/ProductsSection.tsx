@@ -3,12 +3,14 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { useCartStore } from '@/store/cartStore';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Product {
     id: number;
     title: string;
     description: string;
-    price: string;
+    price: number;
     category: string;
     gradient: string;
     size: 'small' | 'medium' | 'large';
@@ -19,7 +21,7 @@ const products: Product[] = [
         id: 1,
         title: 'Neon Streetwear Jacket',
         description: 'Holographic tech-fabric with reactive LED strips and quantum insulation',
-        price: '$499',
+        price: 499,
         category: 'Clothes',
         gradient: 'from-[#00d4ff] to-[#b300ff]',
         size: 'large',
@@ -28,7 +30,7 @@ const products: Product[] = [
         id: 2,
         title: 'Cyber Running Shoes',
         description: 'Anti-gravity soles with neural sync technology',
-        price: '$349',
+        price: 349,
         category: 'Shoes',
         gradient: 'from-[#ff00ff] to-[#00fff5]',
         size: 'medium',
@@ -37,7 +39,7 @@ const products: Product[] = [
         id: 3,
         title: 'Quantum Tech Backpack',
         description: 'Dimensional storage with biometric security',
-        price: '$599',
+        price: 599,
         category: 'Bags',
         gradient: 'from-[#00ff88] to-[#00d4ff]',
         size: 'medium',
@@ -46,7 +48,7 @@ const products: Product[] = [
         id: 4,
         title: 'Holographic Sneakers',
         description: 'Color-shifting nano-material with smart cushioning',
-        price: '$279',
+        price: 279,
         category: 'Shoes',
         gradient: 'from-[#ffeb3b] to-[#ff00ff]',
         size: 'small',
@@ -55,7 +57,7 @@ const products: Product[] = [
         id: 5,
         title: 'Plasma Shoulder Bag',
         description: 'Lightweight carbon-fiber with neon accent strips',
-        price: '$399',
+        price: 399,
         category: 'Bags',
         gradient: 'from-[#b300ff] to-[#00fff5]',
         size: 'small',
@@ -64,7 +66,7 @@ const products: Product[] = [
         id: 6,
         title: 'Cyberpunk Hoodie Set',
         description: 'Temperature-adaptive fabric with integrated AR display',
-        price: '$699',
+        price: 699,
         category: 'Clothes',
         gradient: 'from-[#00d4ff] to-[#00ff88]',
         size: 'large',
@@ -72,6 +74,8 @@ const products: Product[] = [
 ];
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
+    const { t } = useLanguage();
+    const addItem = useCartStore((state) => state.addItem);
     const cardRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: cardRef,
@@ -86,6 +90,16 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         small: 'md:col-span-1 md:row-span-1',
         medium: 'md:col-span-1 md:row-span-2',
         large: 'md:col-span-2 md:row-span-1',
+    };
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        addItem({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            category: product.category,
+        });
     };
 
     return (
@@ -119,7 +133,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                             transition={{ duration: 0.6 }}
                             className="w-8 h-8 rounded-full gradient-cyber flex items-center justify-center"
                         >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </motion.div>
@@ -135,14 +149,15 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
                 <div className="flex items-center justify-between">
                     <span className="text-3xl font-bold text-gradient-yellow">
-                        {product.price}
+                        ${product.price}
                     </span>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={handleAddToCart}
                         className="glass px-6 py-2 rounded-full text-sm font-semibold hover:neon-glow-blue transition-all duration-300"
                     >
-                        Add to Cart
+                        {t.products.addToCart}
                     </motion.button>
                 </div>
             </div>
@@ -161,6 +176,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 }
 
 export default function ProductsSection() {
+    const { t } = useLanguage();
     const sectionRef = useRef<HTMLElement>(null);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
@@ -192,7 +208,7 @@ export default function ProductsSection() {
                         transition={{ duration: 0.8 }}
                         className="text-5xl md:text-7xl font-bold text-gradient mb-6"
                     >
-                        Featured Collection
+                        {t.products.title}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -201,7 +217,7 @@ export default function ProductsSection() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="text-xl text-gray-400 max-w-2xl mx-auto"
                     >
-                        Premium 2070s fashion • Clothes, shoes, and bags from the future
+                        {t.products.subtitle}
                     </motion.p>
                 </motion.div>
 

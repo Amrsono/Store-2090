@@ -41,7 +41,11 @@ function CyberGrid() {
     );
 }
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function Hero3D() {
+    const { t } = useLanguage();
+
     return (
         <div className="relative w-full h-screen overflow-hidden">
             {/* Gradient Mesh Background */}
@@ -86,7 +90,7 @@ export default function Hero3D() {
                             transition={{ duration: 0.8, delay: 0.3 }}
                             className="text-6xl md:text-8xl font-bold text-gradient neon-text-blue mb-4"
                         >
-                            CYBER FASHION
+                            {t.hero.title}
                         </motion.h1>
                     </div>
 
@@ -97,7 +101,7 @@ export default function Hero3D() {
                         className="overflow-hidden"
                     >
                         <h2 className="text-2xl md:text-4xl font-light text-gradient-yellow">
-                            2070s Style • Clothes • Shoes • Bags
+                            {t.hero.subtitle}
                         </h2>
                     </motion.div>
 
@@ -107,8 +111,7 @@ export default function Hero3D() {
                         transition={{ duration: 1, delay: 0.7 }}
                         className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto"
                     >
-                        Discover cutting-edge fashion from the future. Premium streetwear,
-                        holographic accessories, and quantum-tech footwear
+                        {t.hero.description}
                     </motion.p>
 
                     <motion.div
@@ -117,12 +120,16 @@ export default function Hero3D() {
                         transition={{ duration: 0.6, delay: 0.9 }}
                         className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
                     >
-                        <button className="glass-strong px-8 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300 hover-lift">
-                            Shop Collection
-                        </button>
-                        <button className="gradient-border px-8 py-4 rounded-full font-semibold text-lg hover-lift">
-                            New Arrivals
-                        </button>
+                        <a href="#products">
+                            <button className="glass-strong px-8 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300 hover-lift">
+                                {t.hero.shopCollection}
+                            </button>
+                        </a>
+                        <a href="#features">
+                            <button className="gradient-border px-8 py-4 rounded-full font-semibold text-lg hover-lift">
+                                {t.hero.newArrivals}
+                            </button>
+                        </a>
                     </motion.div>
                 </motion.div>
 

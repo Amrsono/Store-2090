@@ -3,18 +3,24 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'Shop', href: '#products' },
-    { name: 'New Arrivals', href: '#features' },
-    { name: 'Trending', href: '#dashboard' },
-    { name: 'Contact', href: '#contact' },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useCartStore } from '@/store/cartStore';
+import LanguageSwitcher from './LanguageSwitcher';
+import Link from 'next/link';
 
 export default function Navbar() {
+    const { t } = useLanguage();
+    const { getTotalItems } = useCartStore();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const navLinks = [
+        { name: t.nav.home, href: '/' },
+        { name: t.nav.shop, href: '#products' },
+        { name: t.nav.newArrivals, href: '#features' },
+        { name: t.nav.trending, href: '#dashboard' },
+        { name: t.nav.contact, href: '#contact' },
+    ];
 
     useEffect(() => {
         const handleScroll = () => {
@@ -24,6 +30,8 @@ export default function Navbar() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const totalItems = getTotalItems();
 
     return (
         <motion.nav
@@ -38,19 +46,21 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        className="flex items-center space-x-2"
-                    >
-                        <div className="w-10 h-10 rounded-lg gradient-cyber flex items-center justify-center neon-glow-purple">
-                            <span className="text-2xl font-bold">C</span>
-                        </div>
-                        <span className="text-xl font-bold text-gradient">CYBER</span>
-                    </motion.div>
+                    <Link href="/">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            className="flex items-center space-x-2"
+                        >
+                            <div className="w-10 h-10 rounded-lg gradient-cyber flex items-center justify-center neon-glow-purple">
+                                <span className="text-2xl font-bold text-white">C</span>
+                            </div>
+                            <span className="text-xl font-bold text-gradient">CYBER</span>
+                        </motion.div>
+                    </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-1">
-                        {navItems.map((item, index) => (
+                    <div className="hidden lg:flex items-center space-x-1">
+                        {navLinks.map((item, index) => (
                             <motion.a
                                 key={item.name}
                                 href={item.href}
@@ -65,44 +75,85 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* CTA Button */}
                     <div className="hidden md:flex items-center space-x-4">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="glass px-6 py-2 rounded-full text-sm font-semibold hover:neon-glow-purple transition-all duration-300"
-                        >
-                            Sign In
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="gradient-cyber px-6 py-2 rounded-full text-sm font-semibold neon-glow-blue hover:neon-glow-purple transition-all duration-300"
-                        >
-                            Shop Now
-                        </motion.button>
+                        <LanguageSwitcher />
+
+                        {/* Cart Button */}
+                        <Link href="/cart">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="relative glass p-2 rounded-lg hover:neon-glow-blue transition-all duration-300"
+                            >
+                                <span className="text-xl">🛒</span>
+                                <AnimatePresence>
+                                    {totalItems > 0 && (
+                                        <motion.span
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            exit={{ scale: 0 }}
+                                            className="absolute -top-2 -right-2 w-5 h-5 rounded-full gradient-cyber text-[10px] font-bold flex items-center justify-center neon-glow-purple"
+                                        >
+                                            {totalItems}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.button>
+                        </Link>
+
+                        <Link href="/login">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="glass px-6 py-2 rounded-full text-sm font-semibold hover:neon-glow-purple transition-all duration-300"
+                            >
+                                {t.nav.signIn}
+                            </motion.button>
+                        </Link>
+
+                        <a href="#products">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="gradient-cyber px-6 py-2 rounded-full text-sm font-semibold neon-glow-blue hover:neon-glow-purple transition-all duration-300"
+                            >
+                                {t.nav.shopNow}
+                            </motion.button>
+                        </a>
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="md:hidden glass p-2 rounded-lg"
-                    >
-                        <div className="w-6 h-5 flex flex-col justify-between">
-                            <motion.span
-                                animate={mobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                                className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
-                            />
-                            <motion.span
-                                animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                                className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
-                            />
-                            <motion.span
-                                animate={mobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-                                className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
-                            />
-                        </div>
-                    </button>
+                    <div className="md:hidden flex items-center gap-4">
+                        <Link href="/cart">
+                            <span className="relative text-2xl">
+                                🛒
+                                {totalItems > 0 && (
+                                    <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full gradient-cyber text-[8px] font-bold flex items-center justify-center">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </span>
+                        </Link>
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="glass p-2 rounded-lg"
+                        >
+                            <div className="w-6 h-5 flex flex-col justify-between">
+                                <motion.span
+                                    animate={mobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                                    className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
+                                />
+                                <motion.span
+                                    animate={mobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+                                    className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
+                                />
+                                <motion.span
+                                    animate={mobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+                                    className="w-full h-0.5 bg-[var(--neon-blue)] rounded"
+                                />
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -116,7 +167,10 @@ export default function Navbar() {
                         className="md:hidden glass-strong border-t border-white/10"
                     >
                         <div className="px-4 py-6 space-y-3">
-                            {navItems.map((item) => (
+                            <div className="flex justify-between items-center mb-6">
+                                <LanguageSwitcher />
+                            </div>
+                            {navLinks.map((item) => (
                                 <motion.a
                                     key={item.name}
                                     href={item.href}
@@ -128,12 +182,16 @@ export default function Navbar() {
                                 </motion.a>
                             ))}
                             <div className="pt-4 space-y-3">
-                                <button className="w-full glass px-6 py-3 rounded-full font-semibold">
-                                    Sign In
-                                </button>
-                                <button className="w-full gradient-cyber px-6 py-3 rounded-full font-semibold neon-glow-blue">
-                                    Shop Now
-                                </button>
+                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                    <button className="w-full glass px-6 py-3 rounded-full font-semibold">
+                                        {t.nav.signIn}
+                                    </button>
+                                </Link>
+                                <a href="#products" onClick={() => setMobileMenuOpen(false)}>
+                                    <button className="w-full gradient-cyber px-6 py-3 rounded-full font-semibold neon-glow-blue">
+                                        {t.nav.shopNow}
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </motion.div>

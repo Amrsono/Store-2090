@@ -16,16 +16,34 @@ const socialLinks = [
     { name: 'Pinterest', icon: '📌', href: '#' },
 ];
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function Footer() {
+    const { t } = useLanguage();
+
+    const footerLinks = {
+        [t.footer.shop]: [t.products.categories.clothes, t.products.categories.shoes, t.products.categories.bags, t.products.categories.accessories],
+        [t.footer.company]: ['About', 'Blog', 'Careers', 'Press'],
+        [t.footer.support]: ['Help Center', 'Shipping', 'Returns', 'Contact'],
+        [t.footer.legal]: ['Privacy', 'Terms', 'Cookie Policy', 'Licenses'],
+    };
+
+    const socialLinks = [
+        { name: 'Instagram', icon: '📸', href: '#' },
+        { name: 'TikTok', icon: '🎵', href: '#' },
+        { name: 'Twitter', icon: '𝕏', href: '#' },
+        { name: 'Pinterest', icon: '📌', href: '#' },
+    ];
+
     return (
         <footer className="relative py-20 px-4 overflow-hidden border-t border-white/10">
             {/* Background */}
             <div className="absolute inset-0 gradient-mesh opacity-20" />
 
             <div className="relative z-10 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                     {/* Brand */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-1">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -34,12 +52,12 @@ export default function Footer() {
                         >
                             <div className="flex items-center space-x-2">
                                 <div className="w-12 h-12 rounded-xl gradient-cyber flex items-center justify-center neon-glow-purple">
-                                    <span className="text-2xl font-bold">C</span>
+                                    <span className="text-2xl font-bold text-white">C</span>
                                 </div>
                                 <span className="text-2xl font-bold text-gradient">CYBER</span>
                             </div>
                             <p className="text-gray-400 text-sm max-w-xs">
-                                Discover the future of fashion with cutting-edge 2070s style and quantum-tech materials.
+                                {t.footer.description}
                             </p>
                             <div className="flex gap-3">
                                 {socialLinks.map((social, index) => (
@@ -69,7 +87,7 @@ export default function Footer() {
                             viewport={{ once: true }}
                             transition={{ delay: categoryIndex * 0.1 }}
                         >
-                            <h3 className="text-sm font-semibold text-gradient mb-4">{category}</h3>
+                            <h3 className="text-sm font-semibold text-gradient mb-4 uppercase tracking-wider">{category}</h3>
                             <ul className="space-y-3">
                                 {links.map((link, linkIndex) => (
                                     <motion.li
@@ -101,13 +119,13 @@ export default function Footer() {
                 >
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <div>
-                            <h3 className="text-2xl font-bold text-gradient mb-2">Stay in Style</h3>
-                            <p className="text-gray-400">Get exclusive drops and fashion updates</p>
+                            <h3 className="text-2xl font-bold text-gradient mb-2">{t.footer.stayInStyle}</h3>
+                            <p className="text-gray-400">{t.footer.exclusiveDrops}</p>
                         </div>
                         <div className="flex gap-2 w-full md:w-auto">
                             <input
                                 type="email"
-                                placeholder="Enter your email"
+                                placeholder={t.footer.emailPlaceholder}
                                 className="flex-1 md:w-64 px-4 py-3 rounded-lg glass text-sm focus:outline-none focus:ring-2 focus:ring-[var(--neon-blue)]"
                             />
                             <motion.button
@@ -115,7 +133,7 @@ export default function Footer() {
                                 whileTap={{ scale: 0.95 }}
                                 className="gradient-cyber px-6 py-3 rounded-lg font-semibold text-sm neon-glow-blue hover:neon-glow-purple transition-all duration-300 whitespace-nowrap"
                             >
-                                Subscribe
+                                {t.footer.subscribe}
                             </motion.button>
                         </div>
                     </div>
@@ -129,7 +147,7 @@ export default function Footer() {
                     className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
                 >
                     <p className="text-sm text-gray-400">
-                        © 2070 Cyber Fashion. All rights reserved.
+                        {t.footer.copyright}
                     </p>
                     <div className="flex items-center gap-6">
                         <a href="#" className="text-sm text-gray-400 hover:text-[var(--neon-blue)] transition-colors">

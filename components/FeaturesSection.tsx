@@ -86,8 +86,50 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
     );
 }
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function FeaturesSection() {
+    const { t } = useLanguage();
     const sectionRef = useRef<HTMLElement>(null);
+
+    const localizedFeatures: Feature[] = [
+        {
+            icon: '✨',
+            title: t.features.premiumQuality,
+            description: t.features.premiumDesc,
+            color: 'from-[#00d4ff] to-[#00fff5]',
+        },
+        {
+            icon: '🚀',
+            title: t.features.fastDelivery,
+            description: t.features.fastDeliveryDesc,
+            color: 'from-[#b300ff] to-[#ff00ff]',
+        },
+        {
+            icon: '💎',
+            title: t.features.limitedEditions,
+            description: t.features.limitedEditionsDesc,
+            color: 'from-[#ffeb3b] to-[#00ff88]',
+        },
+        {
+            icon: '🌟',
+            title: t.features.arTryOn,
+            description: t.features.arTryOnDesc,
+            color: 'from-[#00fff5] to-[#b300ff]',
+        },
+        {
+            icon: '🎁',
+            title: t.features.freeReturns,
+            description: t.features.freeReturnsDesc,
+            color: 'from-[#00d4ff] to-[#b300ff]',
+        },
+        {
+            icon: '🔒',
+            title: t.features.secureCheckout,
+            description: t.features.secureCheckoutDesc,
+            color: 'from-[#ff00ff] to-[#00d4ff]',
+        },
+    ];
 
     return (
         <section ref={sectionRef} id="features" className="relative py-32 px-4 overflow-hidden">
@@ -115,22 +157,22 @@ export default function FeaturesSection() {
                         className="inline-block mb-4"
                     >
                         <span className="px-6 py-2 rounded-full glass text-sm font-semibold text-gradient">
-                            NEW ARRIVALS
+                            {t.features.badge}
                         </span>
                     </motion.div>
 
                     <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
-                        Why Shop With Us?
+                        {t.features.title}
                     </h2>
 
                     <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-                        Experience the future of fashion with cutting-edge technology and premium service
+                        {t.features.subtitle}
                     </p>
                 </motion.div>
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {features.map((feature, index) => (
+                    {localizedFeatures.map((feature, index) => (
                         <FeatureCard key={feature.title} feature={feature} index={index} />
                     ))}
                 </div>
@@ -145,25 +187,27 @@ export default function FeaturesSection() {
                 >
                     <div className="glass-strong rounded-3xl p-12 max-w-4xl mx-auto">
                         <h3 className="text-3xl md:text-5xl font-bold text-gradient mb-6">
-                            Ready to Upgrade Your Style?
+                            {t.features.ctaTitle}
                         </h3>
                         <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
-                            Join thousands of fashion-forward individuals rocking 2070s style today
+                            {t.features.ctaSubtitle}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <a href="#products">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="gradient-cyber px-10 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300"
+                                >
+                                    {t.features.shopNow}
+                                </motion.button>
+                            </a>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="gradient-cyber px-10 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300"
+                                className="glass-strong px-10 py-4 rounded-full font-semibold text-lg hover-lift hover:neon-glow-blue transition-all duration-300"
                             >
-                                Shop Now
-                            </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="glass-strong px-10 py-4 rounded-full font-semibold text-lg hover:neon-glow-blue transition-all duration-300"
-                            >
-                                View Lookbook
+                                {t.features.viewLookbook}
                             </motion.button>
                         </div>
                     </div>

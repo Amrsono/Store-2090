@@ -89,7 +89,10 @@ function ChartBar({ height, delay, label, value }: { height: number; delay: numb
     );
 }
 
+import { useLanguage } from '@/contexts/LanguageContext';
+
 export default function DashboardSection() {
+    const { t } = useLanguage();
     const sectionRef = useRef<HTMLElement>(null);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
@@ -99,10 +102,10 @@ export default function DashboardSection() {
     const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
 
     const stats = [
-        { title: 'Total Sales', value: '2.4M', change: '+12.5%', trend: 'up' as const, icon: '🛍️' },
-        { title: 'Happy Customers', value: '48K', change: '+8.2%', trend: 'up' as const, icon: '👥' },
-        { title: 'Items Sold', value: '3.2K', change: '+15.3%', trend: 'up' as const, icon: '📦' },
-        { title: 'Avg. Rating', value: '4.9', change: '+0.2', trend: 'up' as const, icon: '⭐' },
+        { title: t.trending.totalSales, value: '2.4M', change: '+12.5%', trend: 'up' as const, icon: '🛍️' },
+        { title: t.trending.happyCustomers, value: '48K', change: '+8.2%', trend: 'up' as const, icon: '👥' },
+        { title: t.trending.itemsSold, value: '3.2K', change: '+15.3%', trend: 'up' as const, icon: '📦' },
+        { title: t.trending.avgRating, value: '4.9', change: '+0.2', trend: 'up' as const, icon: '⭐' },
     ];
 
     const chartData = [
@@ -132,7 +135,7 @@ export default function DashboardSection() {
                         transition={{ duration: 0.8 }}
                         className="text-5xl md:text-7xl font-bold text-gradient mb-6"
                     >
-                        Trending Now
+                        {t.trending.title}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -141,7 +144,7 @@ export default function DashboardSection() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                         className="text-xl text-gray-400 max-w-2xl mx-auto"
                     >
-                        Real-time fashion trends and bestsellers
+                        {t.trending.subtitle}
                     </motion.p>
                 </motion.div>
 
@@ -162,18 +165,18 @@ export default function DashboardSection() {
                 >
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-2xl font-bold text-gradient mb-2">Sales Overview</h3>
-                            <p className="text-gray-400">Monthly items sold</p>
+                            <h3 className="text-2xl font-bold text-gradient mb-2">{t.trending.salesOverview}</h3>
+                            <p className="text-gray-400">{t.trending.monthlyItemsSold}</p>
                         </div>
                         <div className="flex gap-2">
                             <button className="glass px-4 py-2 rounded-lg text-sm hover:neon-glow-blue transition-all duration-300">
-                                Week
+                                {t.trending.week}
                             </button>
                             <button className="gradient-cyber px-4 py-2 rounded-lg text-sm neon-glow-blue">
-                                Month
+                                {t.trending.month}
                             </button>
                             <button className="glass px-4 py-2 rounded-lg text-sm hover:neon-glow-blue transition-all duration-300">
-                                Year
+                                {t.trending.year}
                             </button>
                         </div>
                     </div>
@@ -199,13 +202,13 @@ export default function DashboardSection() {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="glass-strong rounded-2xl p-6"
                     >
-                        <h3 className="text-xl font-bold text-gradient mb-6">Recent Orders</h3>
+                        <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.recentOrders}</h3>
                         <div className="space-y-4">
                             {[
-                                { action: 'New user registered', time: '2 min ago', icon: '👤' },
+                                { action: 'New order placed', time: '2 min ago', icon: '👤' },
                                 { action: 'Payment received', time: '15 min ago', icon: '💳' },
                                 { action: 'Product purchased', time: '1 hour ago', icon: '🛍️' },
-                                { action: 'Support ticket closed', time: '3 hours ago', icon: '✅' },
+                                { action: 'Item shipped', time: '3 hours ago', icon: '✅' },
                             ].map((activity, index) => (
                                 <motion.div
                                     key={index}
@@ -234,13 +237,13 @@ export default function DashboardSection() {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="glass-strong rounded-2xl p-6"
                     >
-                        <h3 className="text-xl font-bold text-gradient mb-6">Bestsellers</h3>
+                        <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.bestsellers}</h3>
                         <div className="space-y-4">
                             {[
-                                { name: 'Quantum Analytics Pro', sales: '1,234', revenue: '$369K', progress: 85 },
-                                { name: 'Neural CRM Suite', sales: '892', revenue: '$178K', progress: 65 },
-                                { name: 'Cyber Security Shield', sales: '756', revenue: '$302K', progress: 55 },
-                                { name: 'AI Content Generator', sales: '543', revenue: '$54K', progress: 40 },
+                                { name: 'Neon Streetwear Jacket', sales: '1,234', revenue: '$615K', progress: 85 },
+                                { name: 'Cyber Running Shoes', sales: '892', revenue: '$311K', progress: 65 },
+                                { name: 'Quantum Tech Backpack', sales: '756', revenue: '$452K', progress: 55 },
+                                { name: 'Holographic Sneakers', sales: '543', revenue: '$151K', progress: 40 },
                             ].map((product, index) => (
                                 <motion.div
                                     key={index}
