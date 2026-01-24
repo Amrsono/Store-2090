@@ -149,6 +149,8 @@ export const en = {
 
     // Common
     common: {
+        currency: "EGP",
+        free: "FREE",
         loading: "Loading...",
         error: "Error",
         success: "Success",

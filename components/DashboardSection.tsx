@@ -229,10 +229,10 @@ export default function DashboardSection() {
                         <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.bestsellers}</h3>
                         <div className="space-y-6">
                             {[
-                                { name: 'Neon Streetwear Jacket', sales: '1,234', revenue: '$615K', progress: 85 },
-                                { name: 'Cyber Running Shoes', sales: '892', revenue: '$311K', progress: 65 },
-                                { name: 'Quantum Tech Backpack', sales: '756', revenue: '$452K', progress: 55 },
-                                { name: 'Holographic Sneakers', sales: '543', revenue: '$151K', progress: 40 },
+                                { name: 'Neon Streetwear Jacket', sales: '1,234', revenue: '615K', progress: 85 },
+                                { name: 'Cyber Running Shoes', sales: '892', revenue: '311K', progress: 65 },
+                                { name: 'Quantum Tech Backpack', sales: '756', revenue: '452K', progress: 55 },
+                                { name: 'Holographic Sneakers', sales: '543', revenue: '151K', progress: 40 },
                             ].map((product, index) => (
                                 <motion.div
                                     key={index}
@@ -244,7 +244,7 @@ export default function DashboardSection() {
                                 >
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm font-semibold">{product.name}</p>
-                                        <p className="text-xs text-gradient-yellow">{product.revenue}</p>
+                                        <p className="text-xs text-gradient-yellow">{t.common.currency} {product.revenue}</p>
                                     </div>
                                     <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden">
                                         <motion.div

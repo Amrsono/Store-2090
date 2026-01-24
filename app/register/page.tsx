@@ -2,34 +2,22 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const { t } = useLanguage();
-    const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-        setIsLoading(true);
-
-        // Mock login logic
-        setTimeout(() => {
-            if (email === 'admin@cyber.com' && password === 'admin123') {
-                router.push('/admin');
-            } else if (email && password) {
-                router.push('/');
-            } else {
-                setError('Invalid quantum credentials');
-            }
-            setIsLoading(false);
-        }, 1500);
+        // Handle registration logic here
+        console.log('Registering:', formData);
     };
 
     return (
@@ -53,28 +41,30 @@ export default function LoginPage() {
                                 <span className="text-3xl font-bold text-white uppercase">C</span>
                             </div>
                         </Link>
-                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tighter mb-2">{t.auth.login}</h1>
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Sync your identity with the grid</p>
+                        <h1 className="text-4xl font-black text-gradient uppercase tracking-tighter mb-2">Create Account</h1>
+                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Join the future of fashion</p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="bg-red-500/10 border border-red-500/50 text-red-500 p-4 rounded-[2rem] text-sm text-center font-bold"
-                            >
-                                {error}
-                            </motion.div>
-                        )}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-4">{t.auth.fullName}</label>
+                            <input
+                                type="text"
+                                required
+                                value={formData.fullName}
+                                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                className="w-full px-6 py-4 rounded-3xl glass bg-white/5 border border-white/10 focus:border-[var(--neon-blue)] focus:outline-none transition-all duration-300 font-medium"
+                                placeholder="Jhon Doe"
+                            />
+                        </div>
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-4">{t.auth.email}</label>
                             <input
                                 type="email"
                                 required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 className="w-full px-6 py-4 rounded-3xl glass bg-white/5 border border-white/10 focus:border-[var(--neon-blue)] focus:outline-none transition-all duration-300 font-medium"
                                 placeholder="name@quantum-net.com"
                             />
@@ -85,8 +75,8 @@ export default function LoginPage() {
                             <input
                                 type="password"
                                 required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 className="w-full px-6 py-4 rounded-3xl glass bg-white/5 border border-white/10 focus:border-[var(--neon-blue)] focus:outline-none transition-all duration-300 font-medium"
                                 placeholder="••••••••"
                             />
@@ -96,27 +86,19 @@ export default function LoginPage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
-                            disabled={isLoading}
-                            className="w-full gradient-cyber py-5 rounded-[2rem] font-black text-xl neon-glow-blue hover:neon-glow-purple transition-all duration-300 shadow-2xl uppercase tracking-tighter mt-4 disabled:opacity-50"
+                            className="w-full gradient-cyber py-5 rounded-[2rem] font-black text-xl neon-glow-blue hover:neon-glow-purple transition-all duration-300 shadow-2xl uppercase tracking-tighter mt-4"
                         >
-                            {isLoading ? t.common.loading : t.auth.loginButton}
+                            {t.auth.registerButton}
                         </motion.button>
                     </form>
 
-                    <div className="mt-12 text-center space-y-4">
+                    <div className="mt-10 text-center">
                         <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">
-                            {t.auth.noAccount}{' '}
-                            <Link href="/register" className="text-[var(--neon-blue)] hover:text-[var(--quantum-purple)] transition-colors">
-                                {t.auth.register}
+                            {t.auth.haveAccount}{' '}
+                            <Link href="/login" className="text-[var(--neon-blue)] hover:text-[var(--quantum-purple)] transition-colors">
+                                {t.auth.signIn}
                             </Link>
                         </p>
-
-                        {/* Admin Prompt */}
-                        <div className="mt-8 pt-8 border-t border-white/5">
-                            <p className="text-[10px] text-gray-600 uppercase tracking-[0.2em] font-black">
-                                DB_ACCESS: admin@cyber.com / admin123
-                            </p>
-                        </div>
                     </div>
                 </div>
             </motion.div>

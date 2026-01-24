@@ -149,7 +149,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
                 <div className="flex items-center justify-between mt-auto">
                     <span className="text-3xl font-bold text-gradient-yellow">
-                        ${product.price}
+                        {t.common.currency} {product.price}
                     </span>
                     <motion.button
                         whileHover={{ scale: 1.05 }}

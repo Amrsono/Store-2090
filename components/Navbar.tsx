@@ -105,9 +105,19 @@ export default function Navbar() {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="glass px-6 py-2 rounded-full text-sm font-semibold hover:neon-glow-purple transition-all duration-300"
+                                className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-purple transition-all duration-300 uppercase tracking-widest"
                             >
                                 {t.nav.signIn}
+                            </motion.button>
+                        </Link>
+
+                        <Link href="/register">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="glass-strong px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-blue transition-all duration-300 uppercase tracking-widest border border-[var(--neon-blue)]/30"
+                            >
+                                {t.auth.register}
                             </motion.button>
                         </Link>
 
@@ -181,14 +191,21 @@ export default function Navbar() {
                                     {item.name}
                                 </motion.a>
                             ))}
-                            <div className="pt-4 space-y-3">
+                            <div className="pt-4 grid grid-cols-2 gap-4">
                                 <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full glass px-6 py-3 rounded-full font-semibold">
+                                    <button className="w-full glass px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest">
                                         {t.nav.signIn}
                                     </button>
                                 </Link>
+                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                                    <button className="w-full glass-strong px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest border border-[var(--neon-blue)]/30">
+                                        {t.auth.register}
+                                    </button>
+                                </Link>
+                            </div>
+                            <div className="pt-2">
                                 <a href="#products" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full gradient-cyber px-6 py-3 rounded-full font-semibold neon-glow-blue">
+                                    <button className="w-full gradient-cyber px-6 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs neon-glow-blue">
                                         {t.nav.shopNow}
                                     </button>
                                 </a>

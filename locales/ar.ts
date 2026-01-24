@@ -151,6 +151,8 @@ export const ar: Translations = {
 
     // Common
     common: {
+        currency: "ج.م",
+        free: "مجاني",
         loading: "جاري التحميل...",
         error: "خطأ",
         success: "نجح",
