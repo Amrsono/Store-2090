@@ -166,7 +166,7 @@ export default function AdminCustomers() {
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-4xl font-bold text-gradient uppercase tracking-tighter">Citizen Database</h1>
+                    <h1 className="text-4xl font-bold text-gradient uppercase tracking-tighter">Customers Database</h1>
                     <p className="text-gray-400 font-bold uppercase tracking-widest text-xs mt-1">Manage grid residents and their transactions</p>
                 </div>
                 <div className="flex gap-4">
@@ -195,7 +195,7 @@ export default function AdminCustomers() {
                             animate={{ scale: 1, y: 0 }}
                             className="glass-strong rounded-[3rem] p-10 max-w-lg w-full border border-white/10 shadow-2xl"
                         >
-                            <h2 className="text-2xl font-bold text-gradient uppercase mb-8">Edit Citizen Records</h2>
+                            <h2 className="text-2xl font-bold text-gradient uppercase mb-8">Edit Customer Records</h2>
                             <form onSubmit={handleEditSubmit} className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 px-4">Full Name</label>
@@ -244,7 +244,7 @@ export default function AdminCustomers() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-white/5">
-                                <th className="text-left pb-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Citizen</th>
+                                <th className="text-left pb-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Customer</th>
                                 <th className="text-left pb-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Status</th>
                                 <th className="text-left pb-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Grid Activity</th>
                                 <th className="text-left pb-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Total Credit</th>
@@ -389,7 +389,7 @@ export default function AdminCustomers() {
                                 ))
                             ) : (
                                 <div className="col-span-2 text-center py-20 italic opacity-20">
-                                    No transaction records found in the grid for this citizen.
+                                    No transaction records found in the grid for this customer.
                                 </div>
                             )}
                         </div>
