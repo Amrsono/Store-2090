@@ -8,7 +8,13 @@ from app.database import engine, Base
 from app.models import User, Product, Order, OrderItem
 
 # Create database tables
-Base.metadata.create_all(bind=engine)
+# Create database tables (Safe mode for Vercel)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"WARNING: Database table creation failed: {e}")
+    # Continue startup even if DB fails, so we can see logs/health
+
 
 import os
 root_path = "/api" if os.getenv("VERCEL") else ""
