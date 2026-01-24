@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
+import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
 
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -22,34 +23,70 @@ export default function CheckoutPage() {
         postalCode: '',
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const { user } = useAuthStore();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Create order (mock for now)
-        const order = {
-            id: `ORD-${Date.now()}`,
-            customerName: formData.fullName,
-            customerEmail: formData.email,
-            items: items.map(item => ({
-                id: item.id,
-                productId: item.id,
-                title: item.title,
-                price: item.price,
-                quantity: item.quantity,
-            })),
-            totalAmount: getTotalPrice(),
-            status: 'pending' as const,
-            paymentMethod,
-            shippingAddress: `${formData.address}, ${formData.city}, ${formData.postalCode}`,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+        if (!user) {
+            router.push('/login?redirect=/checkout');
+            return;
+        }
 
-        console.log('Order placed:', order);
+        setIsLoading(true);
 
-        // Clear cart and redirect
-        clearCart();
-        router.push('/order-success?orderId=' + order.id);
+        try {
+            const query = `
+                mutation CreateOrder($userId: Int!, $items: [OrderItemInput!]!, $shippingAddress: String!) {
+                    createOrder(userId: $userId, input: {
+                        items: $items,
+                        shippingAddress: $shippingAddress
+                    }) {
+                        id
+                        totalAmount
+                        status
+                    }
+                }
+            `;
+
+            const variables = {
+                userId: parseInt(user.id),
+                items: items.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity
+                })),
+                shippingAddress: `${formData.address}, ${formData.city}, ${formData.postalCode}`
+            };
+
+            const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${token}` // Add token if auth middleware requires it
+                },
+                body: JSON.stringify({ query, variables }),
+            });
+
+            const result = await response.json();
+
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
+            }
+
+            const { createOrder } = result.data;
+            console.log('Order placed:', createOrder);
+
+            // Clear cart and redirect
+            clearCart();
+            router.push('/order-success?orderId=' + createOrder.id);
+
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Failed to place order. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (items.length === 0) {

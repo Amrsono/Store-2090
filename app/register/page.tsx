@@ -89,7 +89,7 @@ export default function RegisterPage() {
             const { user } = result.data.register;
 
             // Login the user in the store
-            login(user.email, user.isAdmin || false);
+            login(user.id, user.email, user.isAdmin || false);
 
             // Redirect to home
             router.push('/');

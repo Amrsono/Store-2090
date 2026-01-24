@@ -21,19 +21,62 @@ export default function LoginPage() {
         setError('');
         setIsLoading(true);
 
-        // Mock login logic
-        setTimeout(() => {
-            if (email === 'admin@cyber.com' && password === 'admin123') {
-                login(email, true);
-                router.push('/admin');
-            } else if (email && password) {
-                login(email, false);
-                router.push('/');
-            } else {
-                setError('Invalid quantum credentials');
+        try {
+            const query = `
+                mutation Login($email: String!, $password: String!) {
+                    login(input: {
+                        email: $email,
+                        password: $password
+                    }) {
+                        accessToken
+                        user {
+                            id
+                            email
+                            username
+                            isAdmin
+                        }
+                    }
+                }
+            `;
+
+            const variables = {
+                email,
+                password,
+            };
+
+            const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query, variables }),
+            });
+
+            const result = await response.json();
+
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
             }
+
+            const { user, accessToken } = result.data.login;
+
+            // Store token if needed (e.g., localStorage)
+            // localStorage.setItem('token', accessToken);
+
+            login(user.id, user.email, user.isAdmin || false);
+
+            if (user.isAdmin) {
+                router.push('/admin');
+            } else {
+                router.push('/');
+            }
+
+        } catch (err: any) {
+            console.error('Login error:', err);
+            setError(err.message || 'Invalid credentials');
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
