@@ -110,35 +110,38 @@ async def migrate_database():
     """
     try:
         from sqlalchemy import text
-        with engine.begin() as connection:
-            print("Checking/Adding missing columns in 'users' table...")
-            
-            # Add email_verified
-            try:
+        from sqlalchemy import text
+        print("Checking/Adding missing columns in 'users' table...")
+        
+        # 1. Add email_verified
+        try:
+            with engine.begin() as connection:
                 connection.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE"))
                 print("Added email_verified")
-            except Exception as e:
-                if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
-                    print("'email_verified' already exists")
-                else:
-                    raise e
+        except Exception as e:
+            if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
+                print("'email_verified' already exists")
+            else:
+                print(f"Error adding email_verified: {e}")
 
-            # Add verification_token
-            try:
+        # 2. Add verification_token
+        try:
+            with engine.begin() as connection:
                 connection.execute(text("ALTER TABLE users ADD COLUMN verification_token VARCHAR(255)"))
                 print("Added verification_token")
-            except Exception as e:
-                if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
-                    print("'verification_token' already exists")
-                else:
-                    raise e
+        except Exception as e:
+            if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
+                print("'verification_token' already exists")
+            else:
+                print(f"Error adding verification_token: {e}")
 
-            # Update products.image_url to TEXT (Postgres only)
-            try:
+        # 3. Update products.image_url to TEXT (Postgres only)
+        try:
+            with engine.begin() as connection:
                 connection.execute(text("ALTER TABLE products ALTER COLUMN image_url TYPE TEXT"))
                 print("Updated products.image_url to TEXT")
-            except Exception as e:
-                print(f"Skipping products.image_url update (expected on SQLite): {str(e)}")
+        except Exception as e:
+            print(f"Skipping products.image_url update: {str(e)}")
                     
         return {"status": "success", "message": "Database migration checks completed."}
     except Exception as e:
