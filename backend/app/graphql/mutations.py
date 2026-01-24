@@ -153,7 +153,8 @@ class Mutation:
         new_order = OrderModel(
             user_id=user_id,
             total_amount=total_amount,
-            shipping_address=input.shipping_address
+            shipping_address=input.shipping_address,
+            payment_method=input.payment_method
         )
         
         db.add(new_order)
@@ -180,7 +181,9 @@ class Mutation:
             total_amount=new_order.total_amount,
             status=new_order.status,
             shipping_address=new_order.shipping_address,
+            payment_method=new_order.payment_method,
             created_at=new_order.created_at,
+            updated_at=new_order.updated_at,
             items=[]
         )
     
@@ -210,7 +213,9 @@ class Mutation:
             total_amount=order.total_amount,
             status=order.status,
             shipping_address=order.shipping_address,
+            payment_method=order.payment_method,
             created_at=order.created_at,
+            updated_at=order.updated_at,
             items=[]
         )
     

@@ -55,6 +55,7 @@ export default function AdminCustomers() {
                             userId
                             totalAmount
                             status
+                            paymentMethod
                             createdAt
                             items {
                                 quantity
@@ -108,7 +109,7 @@ export default function AdminCustomers() {
                     totalAmount: o.totalAmount,
                     status: (o.status || '').toLowerCase(),
                     createdAt: o.createdAt,
-                    paymentMethod: 'Quantum Credit', // Mock
+                    paymentMethod: o.paymentMethod || 'Cash', // Use real payment method
                     items: (o.items || []).map((i: any) => ({
                         title: i.product?.title || 'Unknown Item',
                         quantity: i.quantity,

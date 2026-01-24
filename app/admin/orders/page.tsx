@@ -50,7 +50,9 @@ export default function OrdersPage() {
                             totalAmount
                             status
                             shippingAddress
+                            paymentMethod
                             createdAt
+                            updatedAt
                             items {
                                 id
                                 quantity
@@ -94,10 +96,10 @@ export default function OrdersPage() {
                     return {
                         ...order,
                         status: (order.status || '').toLowerCase(), // Normalize status
-                        updatedAt: order.createdAt, // Fallback
+                        updatedAt: order.updatedAt || order.createdAt, // Use real updatedAt, fallback to createdAt
                         customerName: user?.username || 'Unknown Guest',
                         customerEmail: user?.email || 'No Email',
-                        paymentMethod: 'Quantum Credit', // Mock for display
+                        paymentMethod: order.paymentMethod || 'Cash', // Use real payment method
                         items: (order.items || []).map((item: any) => ({
                             ...item,
                             product: item.product || { title: 'Unknown Product', price: 0 }

@@ -46,6 +46,7 @@ export default function MyOrdersPage() {
                             id
                             totalAmount
                             status
+                            paymentMethod
                             createdAt
                             items {
                                 id
@@ -188,8 +189,8 @@ export default function MyOrdersPage() {
                                     </div>
                                     <div className="mt-4 md:mt-0 flex items-center gap-4">
                                         <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${order.status === 'delivered' ? 'border-green-500/30 bg-green-500/10 text-green-400' :
-                                                order.status === 'processing' ? 'border-blue-500/30 bg-blue-500/10 text-blue-400' :
-                                                    'border-yellow-500/30 bg-yellow-500/10 text-yellow-400'
+                                            order.status === 'processing' ? 'border-blue-500/30 bg-blue-500/10 text-blue-400' :
+                                                'border-yellow-500/30 bg-yellow-500/10 text-yellow-400'
                                             }`}>
                                             {order.status}
                                         </div>
@@ -225,7 +226,7 @@ export default function MyOrdersPage() {
                                             animate={{ width: order.status === 'delivered' ? '100%' : order.status === 'shipped' ? '75%' : order.status === 'processing' ? '50%' : '25%' }}
                                             transition={{ duration: 1, delay: 0.5 }}
                                             className={`h-full ${order.status === 'delivered' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' :
-                                                    'bg-[var(--neon-blue)] shadow-[0_0_10px_var(--neon-blue)]'
+                                                'bg-[var(--neon-blue)] shadow-[0_0_10px_var(--neon-blue)]'
                                                 }`}
                                         />
                                     </div>

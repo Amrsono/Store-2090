@@ -70,7 +70,9 @@ class Order:
     total_amount: float
     status: OrderStatus
     shipping_address: Optional[str]
+    payment_method: Optional[str]
     created_at: datetime
+    updated_at: Optional[datetime]
     items: list[OrderItem]
 
 
@@ -117,3 +119,4 @@ class OrderItemInput:
 class OrderInput:
     items: list[OrderItemInput]
     shipping_address: Optional[str] = None
+    payment_method: Optional[str] = "Cash"

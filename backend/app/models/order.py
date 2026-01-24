@@ -21,6 +21,7 @@ class Order(Base):
     total_amount = Column(Float, nullable=False)
     status = Column(SQLEnum(OrderStatus), default=OrderStatus.PENDING)
     shipping_address = Column(String(500))
+    payment_method = Column(String(50), default="Cash")  # Cash, Card, Quantum Credit, etc.
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 

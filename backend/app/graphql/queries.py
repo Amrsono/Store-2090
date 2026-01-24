@@ -98,7 +98,9 @@ class Query:
                 total_amount=o.total_amount,
                 status=o.status,
                 shipping_address=o.shipping_address,
+                payment_method=o.payment_method,
                 created_at=o.created_at,
+                updated_at=o.updated_at,
                 items=[
                     OrderItem(
                         id=i.id,
@@ -140,7 +142,9 @@ class Query:
                 total_amount=o.total_amount,
                 status=o.status,
                 shipping_address=o.shipping_address,
+                payment_method=o.payment_method,
                 created_at=o.created_at,
+                updated_at=o.updated_at,
                 items=[
                     OrderItem(
                         id=i.id,
