@@ -42,6 +42,18 @@ async def startup_db_check():
                     with connection.begin():
                         connection.execute(text("ALTER TABLE products ALTER COLUMN image_url TYPE TEXT"))
                     print("STARTUP: Updated products.image_url to TEXT")
+                    
+                    # Add payment_method to orders table if missing
+                    try:
+                        with connection.begin():
+                            connection.execute(text("ALTER TABLE orders ADD COLUMN payment_method VARCHAR(50) DEFAULT 'Cash'"))
+                        print("STARTUP: Added payment_method to orders")
+                    except Exception as e:
+                        if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
+                            print("STARTUP: payment_method already exists")
+                        else:
+                            print(f"STARTUP: Failed to add payment_method: {e}")
+                            
         except Exception as e:
             # Check for common errors that we can ignore (like if table doesn't exist yet)
             print(f"STARTUP UPDATE NOTE: {e}")
