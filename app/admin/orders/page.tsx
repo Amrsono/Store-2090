@@ -126,6 +126,10 @@ export default function OrdersPage() {
     });
 
     const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+        // Store original state for rollback
+        const originalOrders = [...orders];
+        const originalSelectedOrder = selectedOrder ? { ...selectedOrder } : null;
+
         // Optimistic update
         const updatedOrders = orders.map(order =>
             order.id === orderId
@@ -138,8 +142,45 @@ export default function OrdersPage() {
             setSelectedOrder({ ...selectedOrder, status: newStatus, updatedAt: new Date().toISOString() });
         }
 
-        // TODO: Implement mutation to update status on backend
-        // For now, it just updates locally to show UI works
+        try {
+            // Call backend mutation
+            const mutation = `
+                mutation UpdateOrderStatus($orderId: Int!, $status: String!) {
+                    updateOrderStatus(orderId: $orderId, status: $status) {
+                        id
+                        status
+                    }
+                }
+            `;
+
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: {
+                        orderId: parseInt(orderId),
+                        status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) // Capitalize first letter
+                    }
+                }),
+            });
+
+            const result = await response.json();
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
+            }
+
+            console.log('Order status updated successfully:', result.data.updateOrderStatus);
+        } catch (error) {
+            console.error('Failed to update order status:', error);
+            // Rollback optimistic update
+            setOrders(originalOrders);
+            if (originalSelectedOrder) {
+                setSelectedOrder(originalSelectedOrder);
+            }
+            alert('Failed to update order status. Please try again.');
+        }
     };
 
     const statusOptions: { value: OrderStatus | 'all'; label: string; color: string }[] = [

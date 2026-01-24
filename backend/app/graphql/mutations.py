@@ -183,3 +183,34 @@ class Mutation:
             created_at=new_order.created_at,
             items=[]
         )
+    
+    @strawberry.mutation
+    def update_order_status(self, order_id: int, status: str) -> Order:
+        """Update order status (admin only in production)"""
+        db: Session = next(get_db())
+        
+        # Validate status
+        valid_statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled']
+        if status not in valid_statuses:
+            raise Exception(f"Invalid status. Must be one of: {', '.join(valid_statuses)}")
+        
+        # Find order
+        order = db.query(OrderModel).filter(OrderModel.id == order_id).first()
+        if not order:
+            raise Exception(f"Order {order_id} not found")
+        
+        # Update status
+        order.status = status
+        db.commit()
+        db.refresh(order)
+        
+        return Order(
+            id=order.id,
+            user_id=order.user_id,
+            total_amount=order.total_amount,
+            status=order.status,
+            shipping_address=order.shipping_address,
+            created_at=order.created_at,
+            items=[]
+        )
+
