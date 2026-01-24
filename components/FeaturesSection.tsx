@@ -58,11 +58,11 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className="group relative"
         >
-            <div className="glass-strong rounded-2xl p-8 hover-lift h-full">
+            <div className="glass shadow-2xl rounded-[3rem] p-8 hover-lift h-full border border-white/5">
                 {/* Icon */}
                 <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
-                    className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 neon-glow-blue group-hover:neon-glow-purple transition-all duration-300`}
+                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 neon-glow-blue group-hover:neon-glow-purple transition-all duration-300`}
                 >
                     <span className="text-4xl">{feature.icon}</span>
                 </motion.div>
@@ -71,14 +71,14 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
                 <h3 className="text-2xl font-bold mb-3 text-gradient group-hover:neon-text-purple transition-all duration-300">
                     {feature.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-gray-400 leading-relaxed text-sm">
                     {feature.description}
                 </p>
 
                 {/* Hover Border Effect */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${feature.color} p-[2px]`}>
-                        <div className="w-full h-full rounded-2xl bg-[var(--obsidian)]" />
+                <div className="absolute inset-0 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className={`absolute inset-0 rounded-[3rem] bg-gradient-to-r ${feature.color} p-[2px]`}>
+                        <div className="w-full h-full rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
                     </div>
                 </div>
             </div>
@@ -90,9 +90,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function FeaturesSection() {
     const { t } = useLanguage();
-    const sectionRef = useRef<HTMLElement>(null);
 
     const localizedFeatures: Feature[] = [
+        // ... (rest of the array remains same)
         {
             icon: '✨',
             title: t.features.premiumQuality,
@@ -132,28 +132,17 @@ export default function FeaturesSection() {
     ];
 
     return (
-        <section ref={sectionRef} id="features" className="relative py-32 px-4 overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[var(--deep-space)] via-[var(--obsidian)] to-[var(--deep-space)]" />
-
-            {/* Animated Background Orbs */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--neon-blue)] rounded-full blur-[150px] opacity-10 animate-pulse-slow" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--quantum-purple)] rounded-full blur-[150px] opacity-10 animate-pulse-slow" style={{ animationDelay: '2s' }} />
-
-            <div className="relative z-10 max-w-7xl mx-auto">
+        <div id="features" className="relative">
+            <div className="relative z-10">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-20"
+                    className="text-center mb-16"
                 >
                     <motion.div
-                        initial={{ scale: 0.9 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: false }}
-                        transition={{ duration: 0.8 }}
                         className="inline-block mb-4"
                     >
                         <span className="px-6 py-2 rounded-full glass text-sm font-semibold text-gradient">
@@ -161,17 +150,17 @@ export default function FeaturesSection() {
                         </span>
                     </motion.div>
 
-                    <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
+                    <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-4">
                         {t.features.title}
                     </h2>
 
-                    <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+                    <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                         {t.features.subtitle}
                     </p>
                 </motion.div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {localizedFeatures.map((feature, index) => (
                         <FeatureCard key={feature.title} feature={feature} index={index} />
                     ))}
@@ -182,14 +171,14 @@ export default function FeaturesSection() {
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
-                    className="mt-20 text-center"
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="mt-16 text-center"
                 >
-                    <div className="glass-strong rounded-3xl p-12 max-w-4xl mx-auto">
-                        <h3 className="text-3xl md:text-5xl font-bold text-gradient mb-6">
+                    <div className="glass rounded-3xl p-8 max-w-3xl mx-auto border border-white/5">
+                        <h3 className="text-2xl md:text-4xl font-bold text-gradient mb-4">
                             {t.features.ctaTitle}
                         </h3>
-                        <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+                        <p className="text-base text-gray-400 mb-8 max-w-xl mx-auto">
                             {t.features.ctaSubtitle}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -197,7 +186,7 @@ export default function FeaturesSection() {
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="gradient-cyber px-10 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300"
+                                    className="gradient-cyber px-8 py-3 rounded-full font-semibold neon-glow-blue hover:neon-glow-purple transition-all duration-300"
                                 >
                                     {t.features.shopNow}
                                 </motion.button>
@@ -205,7 +194,7 @@ export default function FeaturesSection() {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="glass-strong px-10 py-4 rounded-full font-semibold text-lg hover-lift hover:neon-glow-blue transition-all duration-300"
+                                className="glass-strong px-8 py-3 rounded-full font-semibold hover-lift hover:neon-glow-blue transition-all duration-300"
                             >
                                 {t.features.viewLookbook}
                             </motion.button>
@@ -213,6 +202,6 @@ export default function FeaturesSection() {
                     </div>
                 </motion.div>
             </div>
-        </section>
+        </div>
     );
 }

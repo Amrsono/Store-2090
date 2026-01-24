@@ -37,25 +37,25 @@ function StatCard({ title, value, change, trend, icon, delay }: StatCardProps) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: false }}
             transition={{ duration: 0.6, delay }}
-            className="glass-strong rounded-2xl p-6 hover-lift group cursor-pointer"
+            className="glass shadow-xl rounded-[2.5rem] p-8 hover-lift group cursor-pointer border border-white/5"
         >
-            <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl gradient-cyber flex items-center justify-center neon-glow-blue group-hover:neon-glow-purple transition-all duration-300">
-                    <span className="text-2xl">{icon}</span>
+            <div className="flex items-start justify-between mb-6">
+                <div className="w-14 h-14 rounded-2xl gradient-cyber flex items-center justify-center shadow-lg group-hover:neon-glow-purple transition-all duration-300">
+                    <span className="text-3xl">{icon}</span>
                 </div>
                 <div className={cn(
-                    'flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold',
+                    'flex items-center gap-1 px-4 py-1.5 rounded-full text-xs font-bold shadow-inner',
                     trend === 'up' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
                 )}>
                     <span>{trend === 'up' ? '↑' : '↓'}</span>
                     <span>{change}</span>
                 </div>
             </div>
-            <h3 className="text-gray-400 text-sm mb-2">{title}</h3>
+            <h3 className="text-gray-400 text-xs uppercase tracking-widest font-semibold mb-3">{title}</h3>
             <p className="text-4xl font-bold text-gradient">
                 {value.includes('K') || value.includes('M') ? count + value.slice(-1) : count}
             </p>
@@ -93,13 +93,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function DashboardSection() {
     const { t } = useLanguage();
-    const sectionRef = useRef<HTMLElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ['start end', 'end start'],
-    });
-
-    const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
 
     const stats = [
         { title: t.trending.totalSales, value: '2.4M', change: '+12.5%', trend: 'up' as const, icon: '🛍️' },
@@ -118,22 +111,18 @@ export default function DashboardSection() {
     ];
 
     return (
-        <section ref={sectionRef} id="dashboard" className="relative py-32 px-4 overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[var(--obsidian)] via-[var(--deep-space)] to-[var(--obsidian)]" />
-
-            <div className="relative z-10 max-w-7xl mx-auto">
+        <div id="dashboard" className="relative">
+            <div className="relative z-10">
                 {/* Header */}
                 <motion.div
-                    style={{ y }}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: false }}
+                    transition={{ duration: 0.8 }}
                     className="text-center mb-16"
                 >
                     <motion.h2
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: false }}
-                        transition={{ duration: 0.8 }}
-                        className="text-5xl md:text-7xl font-bold text-gradient mb-6"
+                        className="text-4xl md:text-7xl font-bold text-gradient mb-6"
                     >
                         {t.trending.title}
                     </motion.h2>
@@ -142,7 +131,7 @@ export default function DashboardSection() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-xl text-gray-400 max-w-2xl mx-auto"
+                        className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto"
                     >
                         {t.trending.subtitle}
                     </motion.p>
@@ -161,28 +150,28 @@ export default function DashboardSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="glass-strong rounded-2xl p-8"
+                    className="glass rounded-[3rem] p-8 border border-white/5"
                 >
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                         <div>
                             <h3 className="text-2xl font-bold text-gradient mb-2">{t.trending.salesOverview}</h3>
                             <p className="text-gray-400">{t.trending.monthlyItemsSold}</p>
                         </div>
                         <div className="flex gap-2">
-                            <button className="glass px-4 py-2 rounded-lg text-sm hover:neon-glow-blue transition-all duration-300">
+                            <button className="glass px-4 py-2 rounded-xl text-sm hover:neon-glow-blue transition-all duration-300">
                                 {t.trending.week}
                             </button>
-                            <button className="gradient-cyber px-4 py-2 rounded-lg text-sm neon-glow-blue">
+                            <button className="gradient-cyber px-4 py-2 rounded-xl text-sm neon-glow-blue">
                                 {t.trending.month}
                             </button>
-                            <button className="glass px-4 py-2 rounded-lg text-sm hover:neon-glow-blue transition-all duration-300">
+                            <button className="glass px-4 py-2 rounded-xl text-sm hover:neon-glow-blue transition-all duration-300">
                                 {t.trending.year}
                             </button>
                         </div>
                     </div>
 
                     {/* Chart */}
-                    <div className="flex items-end justify-between gap-4 h-80 px-4">
+                    <div className="flex items-end justify-between gap-4 h-64 md:h-80 px-4">
                         {chartData.map((data, index) => (
                             <ChartBar
                                 key={data.label}
@@ -194,13 +183,13 @@ export default function DashboardSection() {
                 </motion.div>
 
                 {/* Activity Feed */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
                     <motion.div
                         initial={{ opacity: 0, x: -40 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.6 }}
-                        className="glass-strong rounded-2xl p-6"
+                        className="glass-strong rounded-[2.5rem] p-8 border border-white/5"
                     >
                         <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.recentOrders}</h3>
                         <div className="space-y-4">
@@ -216,9 +205,9 @@ export default function DashboardSection() {
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: false }}
                                     transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-                                    className="flex items-center gap-4 p-3 rounded-lg glass hover:neon-glow-blue transition-all duration-300 cursor-pointer"
+                                    className="flex items-center gap-4 p-4 rounded-2xl glass hover:neon-glow-blue transition-all duration-300 cursor-pointer border border-white/5"
                                 >
-                                    <div className="w-10 h-10 rounded-lg gradient-cyber flex items-center justify-center">
+                                    <div className="w-12 h-12 rounded-xl gradient-cyber flex items-center justify-center">
                                         <span className="text-xl">{activity.icon}</span>
                                     </div>
                                     <div className="flex-1">
@@ -235,10 +224,10 @@ export default function DashboardSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.6 }}
-                        className="glass-strong rounded-2xl p-6"
+                        className="glass-strong rounded-[2.5rem] p-8 border border-white/5"
                     >
                         <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.bestsellers}</h3>
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {[
                                 { name: 'Neon Streetwear Jacket', sales: '1,234', revenue: '$615K', progress: 85 },
                                 { name: 'Cyber Running Shoes', sales: '892', revenue: '$311K', progress: 65 },
@@ -251,13 +240,13 @@ export default function DashboardSection() {
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: false }}
                                     transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-                                    className="space-y-2"
+                                    className="space-y-3"
                                 >
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm font-semibold">{product.name}</p>
                                         <p className="text-xs text-gradient-yellow">{product.revenue}</p>
                                     </div>
-                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             whileInView={{ width: `${product.progress}%` }}
@@ -273,6 +262,6 @@ export default function DashboardSection() {
                     </motion.div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }

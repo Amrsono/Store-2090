@@ -111,43 +111,43 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             viewport={{ once: false, margin: '-100px' }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className={cn(
-                'group relative overflow-hidden rounded-2xl glass-strong p-6 hover-lift cursor-pointer',
+                'group relative overflow-hidden rounded-[3rem] glass shadow-2xl p-8 hover-lift cursor-pointer border border-white/5',
                 sizeClasses[product.size]
             )}
         >
             {/* Gradient Background */}
             <div className={cn(
-                'absolute inset-0 bg-gradient-to-br opacity-10 group-hover:opacity-20 transition-opacity duration-500',
+                'absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity duration-500',
                 product.gradient
             )} />
 
             {/* Content */}
             <div className="relative z-10 h-full flex flex-col justify-between">
                 <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-semibold px-3 py-1 rounded-full glass text-gradient">
+                    <div className="flex items-center justify-between mb-6">
+                        <span className="text-xs font-semibold px-4 py-1 rounded-full glass text-gradient uppercase tracking-widest">
                             {product.category}
                         </span>
                         <motion.div
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.6 }}
-                            className="w-8 h-8 rounded-full gradient-cyber flex items-center justify-center"
+                            className="w-10 h-10 rounded-2xl gradient-cyber flex items-center justify-center shadow-lg"
                         >
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </motion.div>
                     </div>
 
-                    <h3 className="text-2xl font-bold mb-3 neon-text-blue group-hover:neon-text-purple transition-all duration-300">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 neon-text-blue group-hover:neon-text-purple transition-all duration-300">
                         {product.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-4">
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6">
                         {product.description}
                     </p>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-auto">
                     <span className="text-3xl font-bold text-gradient-yellow">
                         ${product.price}
                     </span>
@@ -155,7 +155,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleAddToCart}
-                        className="glass px-6 py-2 rounded-full text-sm font-semibold hover:neon-glow-blue transition-all duration-300"
+                        className="gradient-cyber px-8 py-3 rounded-full text-sm font-bold shadow-lg hover:neon-glow-blue transition-all duration-300"
                     >
                         {t.products.addToCart}
                     </motion.button>
@@ -163,12 +163,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             </div>
 
             {/* Hover Effect Border */}
-            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="absolute inset-0 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                 <div className={cn(
-                    'absolute inset-0 rounded-2xl bg-gradient-to-r p-[2px]',
+                    'absolute inset-0 rounded-[3rem] bg-gradient-to-r p-[2px]',
                     product.gradient
                 )}>
-                    <div className="w-full h-full rounded-2xl bg-[var(--obsidian)]" />
+                    <div className="w-full h-full rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
                 </div>
             </div>
         </motion.div>
@@ -177,36 +177,20 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
 export default function ProductsSection() {
     const { t } = useLanguage();
-    const sectionRef = useRef<HTMLElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ['start end', 'end start'],
-    });
-
-    const headerY = useTransform(scrollYProgress, [0, 0.5], [100, 0]);
-    const headerOpacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
 
     return (
-        <section ref={sectionRef} id="products" className="relative py-32 px-4 overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0 gradient-mesh opacity-30" />
-
-            {/* Floating Orbs */}
-            <div className="absolute top-20 left-10 w-64 h-64 bg-[var(--neon-blue)] rounded-full blur-[120px] opacity-20 animate-pulse-slow" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-[var(--quantum-purple)] rounded-full blur-[150px] opacity-20 animate-pulse-slow" />
-
-            <div className="relative z-10 max-w-7xl mx-auto">
+        <div id="products" className="relative">
+            <div className="relative z-10">
                 {/* Section Header */}
                 <motion.div
-                    style={{ y: headerY, opacity: headerOpacity }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: false }}
+                    transition={{ duration: 0.8 }}
                     className="text-center mb-16"
                 >
                     <motion.h2
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false }}
-                        transition={{ duration: 0.8 }}
-                        className="text-5xl md:text-7xl font-bold text-gradient mb-6"
+                        className="text-4xl md:text-7xl font-bold text-gradient mb-6"
                     >
                         {t.products.title}
                     </motion.h2>
@@ -215,19 +199,19 @@ export default function ProductsSection() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-xl text-gray-400 max-w-2xl mx-auto"
+                        className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto"
                     >
                         {t.products.subtitle}
                     </motion.p>
                 </motion.div>
 
                 {/* Bento Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:auto-rows-[350px]">
                     {products.map((product, index) => (
                         <ProductCard key={product.id} product={product} index={index} />
                     ))}
                 </div>
             </div>
-        </section>
+        </div>
     );
 }
