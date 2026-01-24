@@ -41,10 +41,11 @@ export default function CheckoutPage() {
 
         try {
             const query = `
-                mutation CreateOrder($userId: Int!, $items: [OrderItemInput!]!, $shippingAddress: String!) {
+                mutation CreateOrder($userId: Int!, $items: [OrderItemInput!]!, $shippingAddress: String!, $paymentMethod: String) {
                     createOrder(userId: $userId, input: {
                         items: $items,
-                        shippingAddress: $shippingAddress
+                        shippingAddress: $shippingAddress,
+                        paymentMethod: $paymentMethod
                     }) {
                         id
                         totalAmount
@@ -59,7 +60,8 @@ export default function CheckoutPage() {
                     productId: item.id,
                     quantity: item.quantity
                 })),
-                shippingAddress: `${formData.address}, ${formData.city}, ${formData.postalCode}`
+                shippingAddress: `${formData.address}, ${formData.city}, ${formData.postalCode}`,
+                paymentMethod: paymentMethod === 'cash' ? 'Cash' : 'Card'
             };
 
             const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
