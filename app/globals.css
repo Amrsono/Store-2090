@@ -4,10 +4,10 @@
 
 @layer base {
   :root {
-    /* Unmistakably Funky Chocolate Brown Palette */
-    --obsidian: #3d231a;
-    --deep-space: #4a2c22;
-    --void: #5c3a30;
+    /* Dark Yellow with Hazy Edges Palette */
+    --obsidian: #0f0d01;
+    --deep-space: #1f1a02;
+    --void: #2b2403;
     --neon-blue: #00d4ff;
     --electric-cyan: #00fff5;
     --plasma-pink: #ff00ff;
@@ -19,8 +19,9 @@
   }
 
   body {
-    background-color: var(--obsidian);
-    background-image: radial-gradient(circle at center, var(--deep-space) 0%, var(--obsidian) 100%);
+    background-color: #0f0d01;
+    /* Create "Hazy Edges" by centering a dark yellow glow that fades into near-black */
+    background-image: radial-gradient(circle at center, #3d3406 0%, #0f0d01 80%, #050400 100%);
     background-attachment: fixed;
     color: white;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -33,16 +34,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--obsidian);
+    background: #0f0d01;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--neon-blue), var(--quantum-purple));
+    background: linear-gradient(180deg, var(--solar-yellow), var(--neon-blue));
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, var(--electric-cyan), var(--plasma-pink));
+    background: linear-gradient(180deg, var(--neon-blue), var(--plasma-pink));
   }
 }
 
@@ -55,24 +56,24 @@
     /* Super curvy */
     margin: 4rem auto;
     padding: 3rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Glassmorphism - Curvier and Softer */
+  /* Glassmorphism - Yellow Tinted and Softer */
   .glass {
-    background: rgba(89, 57, 47, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(61, 52, 6, 0.2);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 235, 59, 0.1);
     border-radius: 3rem;
   }
 
   .glass-strong {
-    background: rgba(89, 57, 47, 0.35);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(61, 52, 6, 0.4);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 235, 59, 0.2);
     border-radius: 4rem;
   }
 
@@ -92,12 +93,12 @@
       0 0 80px rgba(255, 0, 255, 0.1);
   }
 
-  /* Gradient Mesh - More Organic Blobs */
+  /* Gradient Mesh - Complementary Yellow/Blue */
   .gradient-mesh {
     background:
-      radial-gradient(at 10% 10%, rgba(255, 235, 59, 0.08) 0px, transparent 40%),
+      radial-gradient(at 10% 10%, rgba(255, 235, 59, 0.12) 0px, transparent 40%),
       radial-gradient(at 90% 10%, rgba(179, 0, 255, 0.08) 0px, transparent 40%),
-      radial-gradient(at 90% 90%, rgba(0, 212, 255, 0.08) 0px, transparent 40%),
+      radial-gradient(at 90% 90%, rgba(0, 212, 255, 0.1) 0px, transparent 40%),
       radial-gradient(at 10% 90%, rgba(255, 0, 255, 0.08) 0px, transparent 40%);
   }
 
