@@ -9,6 +9,9 @@ import { cn } from '@/lib/utils';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 
+// Force dynamic rendering to avoid SSR issues with stores
+export const dynamic = 'force-dynamic';
+
 export default function CheckoutPage() {
     const { t } = useLanguage();
     const router = useRouter();

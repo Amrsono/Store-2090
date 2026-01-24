@@ -105,6 +105,7 @@ export const useCustomerStore = create<CustomerStore>()(
         }),
         {
             name: 'cyber-customers',
+            skipHydration: true,
         }
     )
 );

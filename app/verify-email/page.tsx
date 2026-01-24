@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 
+// Force dynamic rendering to avoid prerender errors with useSearchParams
+export const dynamic = 'force-dynamic';
+
 export default function VerifyEmail() {
     const router = useRouter();
     const searchParams = useSearchParams();
