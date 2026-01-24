@@ -175,12 +175,7 @@ export default function LoginPage() {
                             </Link>
                         </p>
 
-                        {/* Admin Prompt */}
-                        <div className="mt-8 pt-8 border-t border-white/5">
-                            <p className="text-[10px] text-gray-600 uppercase tracking-[0.2em] font-black">
-                                DB_ACCESS: admin@cyber.com / admin123
-                            </p>
-                        </div>
+
                     </div>
                 </div>
             </motion.div>
