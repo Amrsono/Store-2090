@@ -21,28 +21,39 @@ class handler(BaseHTTPRequestHandler):
             if not engine:
                 raise Exception("Could not import database engine")
 
-            with engine.begin() as connection:
-                print("Checking/Adding missing columns in 'users' table...")
-                
-                # Add email_verified
-                try:
+            print("Checking/Adding missing columns...")
+            
+            # 1. Add email_verified
+            try:
+                with engine.begin() as connection:
                     connection.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE"))
                     print("Added email_verified")
-                except Exception as e:
-                    if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
-                        print("'email_verified' already exists")
-                    else:
-                        raise e
+            except Exception as e:
+                e_str = str(e).lower()
+                if "already exists" in e_str or "duplicate column" in e_str:
+                    print("'email_verified' already exists")
+                else:
+                    print(f"Error adding email_verified: {e}")
 
-                # Add verification_token
-                try:
+            # 2. Add verification_token
+            try:
+                with engine.begin() as connection:
                     connection.execute(text("ALTER TABLE users ADD COLUMN verification_token VARCHAR(255)"))
                     print("Added verification_token")
-                except Exception as e:
-                    if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
-                        print("'verification_token' already exists")
-                    else:
-                        raise e
+            except Exception as e:
+                e_str = str(e).lower()
+                if "already exists" in e_str or "duplicate column" in e_str:
+                    print("'verification_token' already exists")
+                else:
+                    print(f"Error adding verification_token: {e}")
+
+            # 3. Update products.image_url to TEXT (Postgres only)
+            try:
+                with engine.begin() as connection:
+                    connection.execute(text("ALTER TABLE products ALTER COLUMN image_url TYPE TEXT"))
+                    print("Updated products.image_url to TEXT")
+            except Exception as e:
+                print(f"Skipping products.image_url update: {str(e)}")
 
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
