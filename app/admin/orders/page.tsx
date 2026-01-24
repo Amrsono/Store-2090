@@ -93,6 +93,7 @@ export default function OrdersPage() {
 
                     return {
                         ...order,
+                        status: (order.status || '').toLowerCase(), // Normalize status
                         updatedAt: order.createdAt, // Fallback
                         customerName: user?.username || 'Unknown Guest',
                         customerEmail: user?.email || 'No Email',
