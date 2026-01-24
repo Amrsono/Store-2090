@@ -52,7 +52,19 @@ export default function LoginPage() {
                 body: JSON.stringify({ query, variables }),
             });
 
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                console.error("Non-JSON Response:", response.status, text);
+                throw new Error(`Server returned ${response.status}. Please check logs.`);
+            }
+
             const result = await response.json();
+
+            if (!response.ok) {
+                console.error("Server Error:", result);
+                throw new Error(result.errors?.[0]?.message || `Server Error: ${response.status}`);
+            }
 
             if (result.errors) {
                 throw new Error(result.errors[0].message);

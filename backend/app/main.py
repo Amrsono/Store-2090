@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from app.graphql.schema import schema
@@ -18,6 +19,18 @@ app = FastAPI(
     version="1.0.0",
     root_path=root_path
 )
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={"errors": [{"message": f"Internal Server Error: {str(e)}", "detail": traceback.format_exc()}]}
+        )
 
 # CORS Configuration
 app.add_middleware(
