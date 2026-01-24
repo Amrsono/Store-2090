@@ -76,9 +76,13 @@ export default function OrdersPage() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query }),
+                    cache: 'no-store',
+                    next: { revalidate: 0 }
                 });
 
                 const result = await response.json();
+                console.log("Admin Orders Raw Result:", result);
+
                 if (result.errors) {
                     console.error("GraphQL Errors:", result.errors);
                     // Don't throw immediately, try to use partial data if any
