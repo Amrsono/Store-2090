@@ -13,13 +13,27 @@ const navItems = [
     { name: 'Customers', href: '/admin/customers', icon: '👥' },
 ];
 
+import { useAuthStore } from '@/store/authStore';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, logout } = useAuthStore();
     const [sidebarOpen, setSidebarOpen] = useState(true);
+
+    useEffect(() => {
+        if (!user?.isAdmin) {
+            router.push('/login');
+        }
+    }, [user, router]);
+
+    if (!user?.isAdmin) return null;
 
     return (
         <div className="min-h-screen bg-[var(--obsidian)]">
@@ -120,6 +134,7 @@ export default function AdminLayout({
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
+                                onClick={logout}
                                 className="gradient-cyber px-4 py-2 rounded-lg text-sm neon-glow-purple"
                             >
                                 Logout

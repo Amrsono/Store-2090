@@ -5,73 +5,7 @@ import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-interface Product {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    category: string;
-    gradient: string;
-    size: 'small' | 'medium' | 'large';
-}
-
-const products: Product[] = [
-    {
-        id: 1,
-        title: 'Neon Streetwear Jacket',
-        description: 'Holographic tech-fabric with reactive LED strips and quantum insulation',
-        price: 499,
-        category: 'Clothes',
-        gradient: 'from-[#00d4ff] to-[#b300ff]',
-        size: 'large',
-    },
-    {
-        id: 2,
-        title: 'Cyber Running Shoes',
-        description: 'Anti-gravity soles with neural sync technology',
-        price: 349,
-        category: 'Shoes',
-        gradient: 'from-[#ff00ff] to-[#00fff5]',
-        size: 'medium',
-    },
-    {
-        id: 3,
-        title: 'Quantum Tech Backpack',
-        description: 'Dimensional storage with biometric security',
-        price: 599,
-        category: 'Bags',
-        gradient: 'from-[#00ff88] to-[#00d4ff]',
-        size: 'medium',
-    },
-    {
-        id: 4,
-        title: 'Holographic Sneakers',
-        description: 'Color-shifting nano-material with smart cushioning',
-        price: 279,
-        category: 'Shoes',
-        gradient: 'from-[#ffeb3b] to-[#ff00ff]',
-        size: 'small',
-    },
-    {
-        id: 5,
-        title: 'Plasma Shoulder Bag',
-        description: 'Lightweight carbon-fiber with neon accent strips',
-        price: 399,
-        category: 'Bags',
-        gradient: 'from-[#b300ff] to-[#00fff5]',
-        size: 'small',
-    },
-    {
-        id: 6,
-        title: 'Cyberpunk Hoodie Set',
-        description: 'Temperature-adaptive fabric with integrated AR display',
-        price: 699,
-        category: 'Clothes',
-        gradient: 'from-[#00d4ff] to-[#00ff88]',
-        size: 'large',
-    },
-];
+import { useProductStore, Product } from '@/store/productStore';
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
     const { t } = useLanguage();
@@ -111,15 +45,21 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             viewport={{ once: false, margin: '-100px' }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className={cn(
-                'group relative overflow-hidden rounded-[3rem] glass shadow-2xl p-8 hover-lift cursor-pointer border border-white/5',
-                sizeClasses[product.size]
+                'group relative overflow-hidden rounded-[3rem] glass shadow-2xl p-8 hover-lift cursor-pointer border border-white/5 min-h-[350px]',
+                sizeClasses[product.size || 'medium']
             )}
         >
-            {/* Gradient Background */}
-            <div className={cn(
-                'absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity duration-500',
-                product.gradient
-            )} />
+            {/* Image Background */}
+            {product.image ? (
+                <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500 overflow-hidden">
+                    <img src={product.image} alt={product.title} className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" />
+                </div>
+            ) : (
+                <div className={cn(
+                    'absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity duration-500',
+                    product.gradient
+                )} />
+            )}
 
             {/* Content */}
             <div className="relative z-10 h-full flex flex-col justify-between">
@@ -142,7 +82,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                     <h3 className="text-2xl md:text-3xl font-bold mb-4 neon-text-blue group-hover:neon-text-purple transition-all duration-300">
                         {product.title}
                     </h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">
                         {product.description}
                     </p>
                 </div>
@@ -166,7 +106,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             <div className="absolute inset-0 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                 <div className={cn(
                     'absolute inset-0 rounded-[3rem] bg-gradient-to-r p-[2px]',
-                    product.gradient
+                    product.gradient || 'from-[var(--neon-blue)] to-[var(--quantum-purple)]'
                 )}>
                     <div className="w-full h-full rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
                 </div>
@@ -177,6 +117,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
 export default function ProductsSection() {
     const { t } = useLanguage();
+    const { products } = useProductStore();
 
     return (
         <div id="products" className="relative">

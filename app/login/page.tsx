@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuthStore } from '@/store/authStore';
 
 export default function LoginPage() {
     const { t } = useLanguage();
+    const login = useAuthStore((state) => state.login);
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,8 +24,10 @@ export default function LoginPage() {
         // Mock login logic
         setTimeout(() => {
             if (email === 'admin@cyber.com' && password === 'admin123') {
+                login(email, true);
                 router.push('/admin');
             } else if (email && password) {
+                login(email, false);
                 router.push('/');
             } else {
                 setError('Invalid quantum credentials');
