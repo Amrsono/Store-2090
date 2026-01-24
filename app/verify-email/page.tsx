@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 // Force dynamic rendering to avoid prerender errors with useSearchParams
 export const dynamic = 'force-dynamic';
 
-export default function VerifyEmail() {
+function VerifyEmailContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
@@ -132,5 +132,24 @@ export default function VerifyEmail() {
                 </div>
             </motion.div>
         </div>
+    );
+}
+
+export default function VerifyEmail() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center p-4">
+                <div className="glass-strong rounded-[3rem] p-12 max-w-md w-full border border-white/10 shadow-2xl">
+                    <div className="text-center">
+                        <div className="w-16 h-16 mx-auto mb-6">
+                            <div className="w-full h-full rounded-full border-4 border-[var(--neon-blue)] border-t-transparent animate-spin"></div>
+                        </div>
+                        <h1 className="text-3xl font-bold text-gradient uppercase mb-4">Loading...</h1>
+                    </div>
+                </div>
+            </div>
+        }>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
