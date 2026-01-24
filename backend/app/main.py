@@ -101,3 +101,42 @@ async def seed_database():
                 "traceback": tb_str.split('\n')
             }
         )
+
+@app.get("/migrate")
+async def migrate_database():
+    """
+    Endpoint to manually migrate database schema (add missing columns).
+    Useful when adding new fields to existing production databases.
+    """
+    try:
+        from sqlalchemy import text
+        with engine.begin() as connection:
+            print("Checking/Adding missing columns in 'users' table...")
+            
+            # Add email_verified
+            try:
+                connection.execute(text("ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE"))
+                print("Added email_verified")
+            except Exception as e:
+                if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
+                    print("'email_verified' already exists")
+                else:
+                    raise e
+
+            # Add verification_token
+            try:
+                connection.execute(text("ALTER TABLE users ADD COLUMN verification_token VARCHAR(255)"))
+                print("Added verification_token")
+            except Exception as e:
+                if "already exists" in str(e).lower() or "duplicate column" in str(e).lower():
+                    print("'verification_token' already exists")
+                else:
+                    raise e
+                    
+        return {"status": "success", "message": "Database migration checks completed."}
+    except Exception as e:
+        import traceback
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e), "traceback": traceback.format_exc()}
+        )
