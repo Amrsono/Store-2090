@@ -86,4 +86,16 @@ async def seed_database():
         return {"status": "success", "message": "Database seeded successfully (Admin: admin@cyber.com)"}
     except Exception as e:
         import traceback
-        return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
+        tb_str = traceback.format_exc()
+        # Print to server logs
+        print(f"SEEDING ERROR: {str(e)}")
+        print(tb_str)
+        # Return to client
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "message": str(e),
+                "traceback": tb_str.split('\n')
+            }
+        )
