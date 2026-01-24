@@ -87,7 +87,9 @@ class Query:
     def my_orders(self, user_id: int) -> List[Order]:
         """Get orders for a user (requires authentication in production)"""
         db: Session = next(get_db())
-        orders = db.query(OrderModel).filter(OrderModel.user_id == user_id).all()
+        orders = db.query(OrderModel).filter(OrderModel.user_id == user_id).order_by(OrderModel.created_at.desc()).all()
+        
+        from app.graphql.types import OrderItem, Product
         
         return [
             Order(
@@ -97,7 +99,28 @@ class Query:
                 status=o.status,
                 shipping_address=o.shipping_address,
                 created_at=o.created_at,
-                items=[]  # Would populate with order items
+                items=[
+                    OrderItem(
+                        id=i.id,
+                        product_id=i.product_id,
+                        quantity=i.quantity,
+                        price=i.price,
+                        product=Product(
+                            id=i.product.id,
+                            title=i.product.title,
+                            description=i.product.description,
+                            price=i.product.price,
+                            category=ProductCategory[i.product.category.name],
+                            gradient=i.product.gradient,
+                            size=i.product.size,
+                            stock=i.product.stock,
+                            image_url=i.product.image_url,
+                            is_active=bool(i.product.is_active),
+                            created_at=i.product.created_at
+                        ) if i.product else None
+                    )
+                    for i in o.items
+                ]
             )
             for o in orders
         ]

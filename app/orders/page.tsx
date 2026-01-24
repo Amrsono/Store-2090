@@ -1,144 +1,242 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/authStore';
-import { mockOrders } from '@/lib/mockData';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import Link from 'next/link';
+
+interface OrderItem {
+    id: number;
+    product: {
+        title: string;
+        imageUrl: string;
+        price: number;
+    };
+    quantity: number;
+    price: number;
+}
+
+interface Order {
+    id: number;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    items: OrderItem[];
+}
 
 export default function MyOrdersPage() {
-    const { t } = useLanguage();
     const { user } = useAuthStore();
     const router = useRouter();
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) {
             router.push('/login');
+            return;
         }
+
+        const fetchOrders = async () => {
+            try {
+                const query = `
+                    query MyOrders($userId: Int!) {
+                        myOrders(userId: $userId) {
+                            id
+                            totalAmount
+                            status
+                            createdAt
+                            items {
+                                id
+                                quantity
+                                price
+                                product {
+                                    title
+                                    imageUrl
+                                    price
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query,
+                        variables: { userId: parseInt(user.id) }
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.errors) {
+                    throw new Error(result.errors[0].message);
+                }
+
+                setOrders(result.data.myOrders);
+            } catch (err: any) {
+                console.error("Order fetch error:", err);
+                setError(err.message || 'Failed to fetch orders');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
     }, [user, router]);
 
-    if (!user) return null;
+    if (loading) {
+        return (
+            <div className="min-h-screen pt-32 flex items-center justify-center bg-[#0a0a0a]">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-16 h-16 border-4 border-[var(--neon-blue)] border-t-transparent rounded-full animate-spin neon-glow-blue"></div>
+                    <p className="text-[var(--neon-blue)] font-mono animate-pulse">LOADING ORDER HISTORY...</p>
+                </div>
+            </div>
+        );
+    }
 
-    const userOrders = mockOrders.filter(order => order.customerEmail === user.email);
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1
+        }
+    };
 
     return (
-        <div className="min-h-screen bg-[var(--obsidian)] py-32 px-6 relative overflow-hidden">
-            {/* Background Blobs */}
-            <div className="fixed inset-0 pointer-events-none opacity-20">
-                <div className="absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] bg-[var(--neon-blue)] rounded-full blur-[180px]" />
-                <div className="absolute bottom-[-5%] left-[-10%] w-[35vw] h-[35vw] bg-[var(--quantum-purple)] rounded-full blur-[160px]" />
+        <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a]">
+            {/* Animated Top Line Style */}
+            <div className="fixed top-20 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--neon-blue)] to-transparent opacity-50 z-40">
+                <motion.div
+                    className="absolute top-0 left-0 h-full w-full bg-[var(--neon-blue)] blur-[2px]"
+                    animate={{ x: [-1000, 1000] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                />
             </div>
 
-            <div className="max-w-7xl mx-auto relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-16 text-center lg:text-left"
+            <div className="max-w-4xl mx-auto">
+                <motion.h1
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="text-4xl md:text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-[#fff] to-[var(--neon-blue)] font-display"
                 >
-                    <h1 className="text-6xl md:text-8xl font-black text-gradient mb-4 tracking-tighter uppercase">{t.nav.myOrders}</h1>
-                    <p className="text-xl text-gray-400 font-bold uppercase tracking-[0.2em]">{user.email}</p>
-                </motion.div>
+                    MY ORDERS
+                </motion.h1>
 
-                <div className="grid grid-cols-1 gap-8">
-                    {userOrders.length > 0 ? (
-                        userOrders.map((order, index) => (
+                {error && (
+                    <div className="p-4 rounded-xl glass-strong border border-red-500/30 text-red-400 mb-8">
+                        {error}
+                    </div>
+                )}
+
+                {!loading && orders.length === 0 ? (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="text-center py-20 glass rounded-3xl border border-white/5"
+                    >
+                        <div className="text-6xl mb-6">🛍️</div>
+                        <h2 className="text-2xl font-bold mb-2">No orders yet</h2>
+                        <p className="text-gray-400 mb-8">Looks like you haven't upgraded your style to 2070 yet.</p>
+                        <Link href="/#products">
+                            <button className="gradient-cyber px-8 py-3 rounded-full font-bold uppercase tracking-wider hover:neon-glow-blue transition-all">
+                                Start Shopping
+                            </button>
+                        </Link>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="space-y-6"
+                    >
+                        {orders.map((order) => (
                             <motion.div
                                 key={order.id}
-                                initial={{ opacity: 0, x: -50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="glass-strong rounded-[3rem] p-8 md:p-12 border border-white/5 shadow-2xl relative group overflow-hidden"
+                                variants={itemVariants}
+                                className="glass rounded-2xl p-6 border border-white/5 hover:border-[var(--neon-blue)]/50 transition-all duration-300 relative overflow-hidden group"
                             >
-                                <div className="absolute top-0 right-0 p-8">
-                                    <span className={cn(
-                                        "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg",
-                                        order.status === 'delivered' ? "bg-green-500/20 text-green-400 border border-green-500/30" :
-                                            order.status === 'cancelled' ? "bg-red-500/20 text-red-400 border border-red-500/30" :
-                                                "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                                    )}>
-                                        {order.status}
-                                    </span>
-                                </div>
+                                {/* Hover Effect Background */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--neon-blue)]/0 via-[var(--neon-blue)]/5 to-[var(--neon-blue)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                <div className="flex flex-col lg:flex-row gap-12">
-                                    <div className="flex-1">
-                                        <div className="mb-8">
-                                            <p className="font-mono text-sm text-[var(--neon-blue)] mb-2 uppercase tracking-widest">{order.id}</p>
-                                            <h2 className="text-3xl font-black text-white mb-2">
-                                                {new Date(order.createdAt).toLocaleDateString(undefined, {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
-                                            </h2>
-                                            <p className="text-gray-500 font-bold text-xs uppercase tracking-[0.3em]">
-                                                {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </p>
+                                <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 pb-4 border-b border-white/10 relative z-10">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-1">
+                                            <span className="text-xs font-mono text-gray-400">ORDER NO.</span>
+                                            <span className="text-xl font-bold font-mono text-[var(--neon-blue)]">#{order.id.toString().padStart(6, '0')}</span>
                                         </div>
-
-                                        <div className="space-y-4">
-                                            {order.items.map((item, idx) => (
-                                                <div key={idx} className="flex items-center justify-between glass bg-white/5 p-4 rounded-2xl border border-white/5 group-hover:bg-white/[0.08] transition-colors">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-xl gradient-cyber flex items-center justify-center text-2xl shadow-lg ring-1 ring-white/10">
-                                                            {item.title.includes('Shoes') ? '👟' :
-                                                                item.title.includes('Bag') ? '🎒' : '👕'}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-black text-white">{item.title}</p>
-                                                            <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">Qty: {item.quantity}</p>
-                                                        </div>
-                                                    </div>
-                                                    <span className="font-black text-gray-300">{t.common.currency} {item.price.toLocaleString()}</span>
-                                                </div>
-                                            ))}
+                                        <div className="text-sm text-gray-400">
+                                            Placing Date: {new Date(order.createdAt).toLocaleDateString()}
                                         </div>
                                     </div>
+                                    <div className="mt-4 md:mt-0 flex items-center gap-4">
+                                        <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${order.status === 'delivered' ? 'border-green-500/30 bg-green-500/10 text-green-400' :
+                                                order.status === 'processing' ? 'border-blue-500/30 bg-blue-500/10 text-blue-400' :
+                                                    'border-yellow-500/30 bg-yellow-500/10 text-yellow-400'
+                                            }`}>
+                                            {order.status}
+                                        </div>
+                                        <div className="text-2xl font-bold text-white">
+                                            ${order.totalAmount.toFixed(2)}
+                                        </div>
+                                    </div>
+                                </div>
 
-                                    <div className="lg:w-80 flex flex-col justify-between pt-12 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-12">
-                                        <div className="space-y-6">
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2">Shipping Terminal</p>
-                                                <p className="text-sm font-bold text-gray-300 leading-relaxed italic opacity-80">{order.shippingAddress}</p>
+                                <div className="space-y-4 relative z-10">
+                                    {order.items.map((item) => (
+                                        <div key={item.id} className="flex items-center gap-4 py-2">
+                                            <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
+                                                {item.product?.imageUrl ? (
+                                                    <img src={item.product.imageUrl} alt={item.product.title} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">NO IMG</div>
+                                                )}
                                             </div>
-                                            <div>
-                                                <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2">Payment Grid</p>
-                                                <p className="text-sm font-black text-[var(--neon-blue)] uppercase tracking-widest">{order.paymentMethod}</p>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold truncate pr-4">{item.product?.title || 'Unknown Product'}</h3>
+                                                <p className="text-sm text-gray-400">Qty: {item.quantity} x ${item.price}</p>
                                             </div>
                                         </div>
+                                    ))}
+                                </div>
 
-                                        <div className="mt-12 pt-8 border-t border-white/5">
-                                            <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Total Payload</p>
-                                            <p className="text-4xl font-black text-gradient-yellow tracking-tighter">
-                                                {t.common.currency} {order.totalAmount.toLocaleString()}
-                                            </p>
-                                        </div>
+                                {/* Tracking Bar */}
+                                <div className="mt-6 pt-4 relative z-10">
+                                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: order.status === 'delivered' ? '100%' : order.status === 'shipped' ? '75%' : order.status === 'processing' ? '50%' : '25%' }}
+                                            transition={{ duration: 1, delay: 0.5 }}
+                                            className={`h-full ${order.status === 'delivered' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' :
+                                                    'bg-[var(--neon-blue)] shadow-[0_0_10px_var(--neon-blue)]'
+                                                }`}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between text-[10px] uppercase font-bold tracking-widest mt-2 text-gray-500">
+                                        <span className={order.status !== 'pending' ? 'text-[var(--neon-blue)]' : ''}>Ordered</span>
+                                        <span className={['processing', 'shipped', 'delivered'].includes(order.status) ? 'text-[var(--neon-blue)]' : ''}>Processing</span>
+                                        <span className={['shipped', 'delivered'].includes(order.status) ? 'text-[var(--neon-blue)]' : ''}>Shipped</span>
+                                        <span className={order.status === 'delivered' ? 'text-green-500' : ''}>Delivered</span>
                                     </div>
                                 </div>
                             </motion.div>
-                        ))
-                    ) : (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="glass-strong rounded-[4rem] p-20 text-center border border-white/10 shadow-2xl"
-                        >
-                            <div className="w-24 h-24 mx-auto mb-8 rounded-2xl gradient-cyber flex items-center justify-center neon-glow-purple shadow-lg">
-                                <span className="text-5xl">📦</span>
-                            </div>
-                            <h2 className="text-4xl font-black text-gradient mb-4 uppercase">No history found</h2>
-                            <p className="text-gray-400 mb-12 text-lg font-bold">Your transaction records haven't been synchronized with the grid yet.</p>
-                            <button
-                                onClick={() => router.push('/#products')}
-                                className="gradient-cyber px-12 py-5 rounded-full font-black text-xl neon-glow-blue hover:neon-glow-purple transition-all duration-300 shadow-2xl uppercase tracking-tighter"
-                            >
-                                Start Shopping
-                            </button>
-                        </motion.div>
-                    )}
-                </div>
+                        ))}
+                    </motion.div>
+                )}
             </div>
         </div>
     );

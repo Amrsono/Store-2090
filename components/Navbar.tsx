@@ -94,6 +94,15 @@ export default function Navbar() {
                                         </motion.button>
                                     </Link>
                                 )}
+                                <Link href="/orders">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-blue transition-all duration-300 uppercase tracking-widest border border-[var(--neon-blue)]/10"
+                                    >
+                                        {t.nav.myOrders}
+                                    </motion.button>
+                                </Link>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
@@ -197,6 +206,11 @@ export default function Navbar() {
                                                 </button>
                                             </Link>
                                         )}
+                                        <Link href="/orders" onClick={() => setMobileMenuOpen(false)}>
+                                            <button className="w-full glass px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest mb-2 border border-[var(--neon-blue)]/10">
+                                                {t.nav.myOrders}
+                                            </button>
+                                        </Link>
                                         <button
                                             onClick={() => {
                                                 logout();
