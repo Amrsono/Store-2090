@@ -12,7 +12,26 @@ sys.path.append(backend_dir)
 try:
     from app.main import app
     from mangum import Mangum
-    handler = Mangum(app)
+    
+    # Wrap Mangum to ensure it handles the Vercel event format correctly
+    # especially for POST requests which can sometimes be tricky
+    mangum_handler = Mangum(app)
+    
+    def handler(event, context):
+        # Allow OPTIONS for CORS preflight
+        if event.get('httpMethod') == 'OPTIONS':
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                },
+                'body': ''
+            }
+            
+        return mangum_handler(event, context)
+
 except Exception as e:
     import traceback
     error_msg = traceback.format_exc()
