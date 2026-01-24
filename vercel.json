@@ -8,5 +8,12 @@
             "source": "/api/(.*)",
             "destination": "/api/index.py"
         }
-    ]
+    ],
+    "functions": {
+        "api/index.py": {
+            "includeFiles": "backend/**",
+            "maxDuration": 10,
+            "memory": 1024
+        }
+    }
 }
