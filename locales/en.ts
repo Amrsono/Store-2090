@@ -10,6 +10,7 @@ export const en = {
         shopNow: "Shop Now",
         admin: "Admin",
         logout: "Logout",
+        myOrders: "My Orders",
     },
 
     // Hero Section

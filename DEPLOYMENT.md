@@ -13,6 +13,28 @@ Complete guide for deploying your Quantum Store to production on Vercel.
 
 ## 🌐 Deploy to Vercel (Recommended)
 
+### Step 0: Database Setup (Alternatives to Supabase)
+
+Since you cannot use Supabase, here are the best alternatives for a PostgreSQL database that works great with Vercel:
+
+#### Option A: Vercel Postgres (Recommended - Easiest)
+Directly integrated into your Vercel dashboard.
+1.  Go to the **Storage** tab in your Vercel Project.
+2.  Click **"Connect Store"** -> **"Create New"** -> **"Postgres"**.
+3.  Once created, go to the `.env.local` tab and copy the `POSTGRES_URL` or `DATABASE_URL`.
+4.  Use this as your `DATABASE_URL` environment variable.
+
+#### Option B: Neon (Serverless Postgres)
+The engine that powers Vercel Postgres.
+1.  Go to [neon.tech](https://neon.tech).
+2.  Create a Free Project.
+3.  Copy the **Connection String** from the dashboard.
+4.  **Important**: Ensure you use the "Pooled" connection string (usually port 6543) for serverless stability.
+
+#### Option C: Railway or Render
+- **Railway**: Go to [railway.app](https://railway.app), create a new PostgreSQL service.
+- **Render**: Go to [render.com](https://render.com), create a new PostgreSQL database.
+
 ### Step 1: Prepare Your Repository
 
 1. **Initialize Git** (if not already done)
@@ -57,8 +79,13 @@ Complete guide for deploying your Quantum Store to production on Vercel.
    - Add any environment variables
    - Example:
      ```
-     NEXT_PUBLIC_API_URL=https://api.yourbackend.com
-     NEXT_PUBLIC_GRAPHQL_URL=https://api.yourbackend.com/graphql
+     ```
+     NEXT_PUBLIC_API_URL=https://your-project.vercel.app/api
+     NEXT_PUBLIC_GRAPHQL_URL=https://your-project.vercel.app/api/graphql
+     
+     # Backend Variables (Required for Python API)
+     DATABASE_URL=postgresql://postgres.[ref]:[password]... (From Supabase)
+     SECRET_KEY=generate-a-long-secure-random-string
      ```
 
 5. **Deploy**

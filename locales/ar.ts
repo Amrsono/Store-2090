@@ -12,6 +12,7 @@ export const ar: Translations = {
         shopNow: "تسوق الآن",
         admin: "لوحة التحكم",
         logout: "تسجيل الخروج",
+        myOrders: "طلباتي",
     },
 
     // Hero Section
