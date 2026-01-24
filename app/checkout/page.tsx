@@ -59,7 +59,10 @@ export default function CheckoutPage() {
                 shippingAddress: `${formData.address}, ${formData.city}, ${formData.postalCode}`
             };
 
-            const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql', {
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql';
+            console.log('Place Order Request to:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,6 +70,15 @@ export default function CheckoutPage() {
                 },
                 body: JSON.stringify({ query, variables }),
             });
+
+            console.log('Checkout Response Status:', response.status);
+
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                console.error("Non-JSON Checkout Response:", response.status, response.statusText, text);
+                throw new Error(`Server returned ${response.status} ${response.statusText}`);
+            }
 
             const result = await response.json();
 

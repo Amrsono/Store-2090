@@ -44,7 +44,10 @@ export default function LoginPage() {
                 password,
             };
 
-            const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql', {
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8000/graphql';
+            console.log('Attempting to login via GraphQL at:', url);
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,11 +55,13 @@ export default function LoginPage() {
                 body: JSON.stringify({ query, variables }),
             });
 
+            console.log('Response status:', response.status);
+
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 const text = await response.text();
-                console.error("Non-JSON Response:", response.status, text);
-                throw new Error(`Server returned ${response.status}. Please check logs.`);
+                console.error("Non-JSON Response:", response.status, response.statusText, text);
+                throw new Error(`Server returned ${response.status} ${response.statusText}. Please check logs.`);
             }
 
             const result = await response.json();

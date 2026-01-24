@@ -42,10 +42,11 @@ app.add_middleware(
 )
 
 # Explicit handling for OPTIONS request on Vercel (Must be defined BEFORE router)
-@app.options("/graphql")
-@app.options("/graphql/")
-async def graphql_options():
-    return {}
+# Explicit handling for OPTIONS request on Vercel (Must be defined BEFORE router)
+# @app.options("/graphql")
+# @app.options("/graphql/")
+# async def graphql_options():
+#     return {}
 
 # GraphQL Router
 graphql_app = GraphQLRouter(schema)
