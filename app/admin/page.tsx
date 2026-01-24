@@ -72,17 +72,20 @@ export default function AdminDashboard() {
                 });
 
                 const result = await response.json();
-                if (result.errors) throw new Error(result.errors[0].message);
+                if (result.errors) {
+                    console.error("GraphQL Errors:", result.errors);
+                    // Don't throw, try to use partial data
+                }
 
-                const orders = result.data.allOrders;
-                const users = result.data.allUsers;
+                const orders = result.data?.allOrders || [];
+                const users = result.data?.allUsers || [];
 
                 // Process Stats
                 const newStats = orders.reduce((acc: DashboardStats, order: any) => {
                     acc.totalOrders++;
-                    acc.totalRevenue += order.totalAmount;
+                    acc.totalRevenue += order.totalAmount || 0;
 
-                    const status = order.status.toLowerCase();
+                    const status = (order.status || '').toLowerCase();
                     if (status === 'pending') acc.pendingOrders++;
                     else if (status === 'delivered') acc.deliveredOrders++;
                     else if (status === 'processing') acc.processingOrders++;
@@ -104,7 +107,7 @@ export default function AdminDashboard() {
 
                 // Process Recent Orders with User Info
                 const ordersWithUsers = orders.slice(0, 10).map((order: any) => {
-                    const user = users.find((u: any) => u.id === order.userId.toString()) || null;
+                    const user = users.find((u: any) => String(u.id) === String(order.userId)) || null;
                     return {
                         ...order,
                         user
