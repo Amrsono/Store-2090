@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCartStore } from '@/store/cartStore';
+import { useAuthStore } from '@/store/authStore';
 import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
 
 export default function Navbar() {
     const { t } = useLanguage();
     const { getTotalItems } = useCartStore();
+    const { user, logout } = useAuthStore();
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -79,25 +81,51 @@ export default function Navbar() {
                         <LanguageSwitcher />
 
 
-                        <Link href="/login">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-purple transition-all duration-300 uppercase tracking-widest"
-                            >
-                                {t.nav.signIn}
-                            </motion.button>
-                        </Link>
+                        {user ? (
+                            <>
+                                {user.isAdmin && (
+                                    <Link href="/admin">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-blue transition-all duration-300 uppercase tracking-widest border border-[var(--neon-blue)]/30"
+                                        >
+                                            {t.nav.admin}
+                                        </motion.button>
+                                    </Link>
+                                )}
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={logout}
+                                    className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-purple transition-all duration-300 uppercase tracking-widest"
+                                >
+                                    {t.nav.logout}
+                                </motion.button>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/login">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="glass px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-purple transition-all duration-300 uppercase tracking-widest"
+                                    >
+                                        {t.nav.signIn}
+                                    </motion.button>
+                                </Link>
 
-                        <Link href="/register">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="glass-strong px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-blue transition-all duration-300 uppercase tracking-widest border border-[var(--neon-blue)]/30"
-                            >
-                                {t.auth.register}
-                            </motion.button>
-                        </Link>
+                                <Link href="/register">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className="glass-strong px-5 py-2 rounded-full text-xs font-bold hover:neon-glow-blue transition-all duration-300 uppercase tracking-widest border border-[var(--neon-blue)]/30"
+                                    >
+                                        {t.auth.register}
+                                    </motion.button>
+                                </Link>
+                            </>
+                        )}
 
                         <a href="#products">
                             <motion.button
@@ -160,16 +188,39 @@ export default function Navbar() {
                                 </motion.a>
                             ))}
                             <div className="pt-4 grid grid-cols-2 gap-4">
-                                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full glass px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest">
-                                        {t.nav.signIn}
-                                    </button>
-                                </Link>
-                                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full glass-strong px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest border border-[var(--neon-blue)]/30">
-                                        {t.auth.register}
-                                    </button>
-                                </Link>
+                                {user ? (
+                                    <>
+                                        {user.isAdmin && (
+                                            <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
+                                                <button className="w-full glass-strong px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest border border-[var(--neon-blue)]/30">
+                                                    {t.nav.admin}
+                                                </button>
+                                            </Link>
+                                        )}
+                                        <button
+                                            onClick={() => {
+                                                logout();
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className="w-full glass px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest"
+                                        >
+                                            {t.nav.logout}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                            <button className="w-full glass px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest">
+                                                {t.nav.signIn}
+                                            </button>
+                                        </Link>
+                                        <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                                            <button className="w-full glass-strong px-4 py-3 rounded-2xl font-bold uppercase text-[10px] tracking-widest border border-[var(--neon-blue)]/30">
+                                                {t.auth.register}
+                                            </button>
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                             <div className="pt-2">
                                 <a href="#products" onClick={() => setMobileMenuOpen(false)}>
