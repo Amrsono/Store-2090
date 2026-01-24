@@ -31,6 +31,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#00d4ff] to-[#b300ff]',
         size: 'large',
         stock: 15,
+        image: '/images/neon-jacket.jpg',
     },
     {
         id: 2,
@@ -41,6 +42,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#ff00ff] to-[#00fff5]',
         size: 'medium',
         stock: 24,
+        image: '/images/cyber-shoes.jpg',
     },
     {
         id: 3,
@@ -51,6 +53,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#00ff88] to-[#00d4ff]',
         size: 'medium',
         stock: 10,
+        image: '/images/quantum-backpack.jpg',
     },
     {
         id: 4,
@@ -61,6 +64,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#ffeb3b] to-[#ff00ff]',
         size: 'small',
         stock: 42,
+        image: '/images/holo-sneakers.jpg',
     },
     {
         id: 5,
@@ -71,6 +75,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#b300ff] to-[#00fff5]',
         size: 'small',
         stock: 18,
+        image: '/images/plasma-bag.jpg',
     },
     {
         id: 6,
@@ -81,6 +86,7 @@ const initialProducts: Product[] = [
         gradient: 'from-[#00d4ff] to-[#00ff88]',
         size: 'large',
         stock: 7,
+        image: '/images/cyberpunk-hoodie.jpg',
     },
 ];
 

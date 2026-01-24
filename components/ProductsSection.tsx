@@ -52,7 +52,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         >
             {/* Image Background */}
             {product.image ? (
-                <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500 overflow-hidden">
+                <div className="absolute inset-0 z-0 opacity-50 group-hover:opacity-80 transition-opacity duration-500 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--obsidian)] via-transparent to-transparent z-10" />
                     <img src={product.image} alt={product.title} className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" />
                 </div>
             ) : (
