@@ -25,25 +25,152 @@ export default function AdminProducts() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (isEditing) {
-            updateProduct(isEditing, formData);
-            setIsEditing(null);
-        } else if (isAdding) {
-            addProduct({
-                title: formData.title || '',
-                description: formData.description || '',
-                price: formData.price || 0,
-                category: formData.category || 'Clothes',
-                gradient: formData.gradient || 'from-[#00d4ff] to-[#b300ff]',
-                size: formData.size || 'medium',
-                stock: formData.stock || 0,
-                image: formData.image,
-            });
-            setIsAdding(false);
+
+        try {
+            if (isEditing) {
+                // Update existing product
+                const mutation = `
+                    mutation UpdateProduct($productId: Int!, $input: ProductInput!) {
+                        updateProduct(productId: $productId, input: $input) {
+                            id
+                            title
+                            description
+                            price
+                            stock
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: {
+                            productId: isEditing,
+                            input: {
+                                title: formData.title || '',
+                                description: formData.description || '',
+                                price: formData.price || 0,
+                                category: formData.category || 'CLOTHES',
+                                gradient: formData.gradient || 'from-[#00d4ff] to-[#b300ff]',
+                                size: (formData.size || 'medium').toUpperCase(),
+                                stock: formData.stock || 0,
+                                imageUrl: formData.image || null
+                            }
+                        }
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.errors) {
+                    throw new Error(result.errors[0].message);
+                }
+
+                // Update local store
+                updateProduct(isEditing, formData);
+                console.log('Product updated successfully:', result.data.updateProduct);
+                setIsEditing(null);
+            } else if (isAdding) {
+                // Create new product
+                const mutation = `
+                    mutation CreateProduct($input: ProductInput!) {
+                        createProduct(input: $input) {
+                            id
+                            title
+                            description
+                            price
+                            stock
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: {
+                            input: {
+                                title: formData.title || '',
+                                description: formData.description || '',
+                                price: formData.price || 0,
+                                category: formData.category || 'CLOTHES',
+                                gradient: formData.gradient || 'from-[#00d4ff] to-[#b300ff]',
+                                size: (formData.size || 'medium').toUpperCase(),
+                                stock: formData.stock || 0,
+                                imageUrl: formData.image || null
+                            }
+                        }
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.errors) {
+                    throw new Error(result.errors[0].message);
+                }
+
+                // Add to local store (with backend ID)
+                addProduct({
+                    title: formData.title || '',
+                    description: formData.description || '',
+                    price: formData.price || 0,
+                    category: formData.category || 'Clothes',
+                    gradient: formData.gradient || 'from-[#00d4ff] to-[#b300ff]',
+                    size: formData.size || 'medium',
+                    stock: formData.stock || 0,
+                    image: formData.image,
+                });
+                console.log('Product created successfully:', result.data.createProduct);
+                setIsAdding(false);
+            }
+            setFormData({});
+        } catch (error) {
+            console.error('Failed to save product:', error);
+            alert(`Failed to save product: ${error}`);
         }
-        setFormData({});
+    };
+
+    const handleDelete = async (productId: number) => {
+        if (!confirm('Are you sure you want to delete this product?')) {
+            return;
+        }
+
+        try {
+            const mutation = `
+                mutation DeleteProduct($productId: Int!) {
+                    deleteProduct(productId: $productId)
+                }
+            `;
+
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: {
+                        productId
+                    }
+                }),
+            });
+
+            const result = await response.json();
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
+            }
+
+            // Remove from local store
+            deleteProduct(productId);
+            console.log('Product deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete product:', error);
+            alert(`Failed to delete product: ${error}`);
+        }
     };
 
     const startEdit = (product: Product) => {
@@ -251,7 +378,7 @@ export default function AdminProducts() {
                                                 ✏️
                                             </button>
                                             <button
-                                                onClick={() => deleteProduct(product.id)}
+                                                onClick={() => handleDelete(product.id)}
                                                 className="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-red-500/20 hover:text-red-400 transition-all"
                                             >
                                                 🗑️

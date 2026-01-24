@@ -133,15 +133,58 @@ export default function AdminCustomers() {
         return orders.filter(order => order.userId === customerId);
     };
 
-    const handleEditSubmit = (e: React.FormEvent) => {
+    const handleEditSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Store original state for rollback
+        const originalCustomers = [...customers];
+
         // Optimistic update
         if (isEditing) {
             setCustomers(customers.map(c => c.id === isEditing ? { ...c, ...formData } : c));
             setIsEditing(null);
+            const currentFormData = { ...formData };
             setFormData({});
+
+            try {
+                // Call backend mutation
+                const mutation = `
+                    mutation UpdateUser($userId: Int!, $fullName: String, $email: String) {
+                        updateUser(userId: $userId, fullName: $fullName, email: $email) {
+                            id
+                            fullName
+                            email
+                        }
+                    }
+                `;
+
+                const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: mutation,
+                        variables: {
+                            userId: parseInt(isEditing),
+                            fullName: currentFormData.name,
+                            email: currentFormData.email
+                        }
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.errors) {
+                    throw new Error(result.errors[0].message);
+                }
+
+                console.log('User updated successfully:', result.data.updateUser);
+            } catch (error) {
+                console.error('Failed to update user:', error);
+                // Rollback optimistic update
+                setCustomers(originalCustomers);
+                alert(`Failed to update customer: ${error}`);
+            }
         }
-        // TODO: Persist to backend via mutation
     };
 
     const startEdit = (customer: Customer) => {
@@ -149,7 +192,10 @@ export default function AdminCustomers() {
         setFormData(customer);
     };
 
-    const toggleCustomerStatus = (customerId: string) => {
+    const toggleCustomerStatus = async (customerId: string) => {
+        // Store original state for rollback
+        const originalCustomers = [...customers];
+
         // Optimistic update
         setCustomers(customers.map(c => {
             if (c.id === customerId) {
@@ -157,7 +203,42 @@ export default function AdminCustomers() {
             }
             return c;
         }));
-        // TODO: Persist via mutation
+
+        try {
+            // Call backend mutation
+            const mutation = `
+                mutation ToggleUserStatus($userId: Int!) {
+                    toggleUserStatus(userId: $userId) {
+                        id
+                        isActive
+                    }
+                }
+            `;
+
+            const url = process.env.NEXT_PUBLIC_GRAPHQL_URL || '/api/graphql';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: {
+                        userId: parseInt(customerId)
+                    }
+                }),
+            });
+
+            const result = await response.json();
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
+            }
+
+            console.log('User status toggled successfully:', result.data.toggleUserStatus);
+        } catch (error) {
+            console.error('Failed to toggle user status:', error);
+            // Rollback optimistic update
+            setCustomers(originalCustomers);
+            alert(`Failed to update customer status: ${error}`);
+        }
     };
 
     if (loading) return <div className="p-10 text-center text-[var(--neon-blue)] font-mono animate-pulse">SCANNING BIOMETRICS...</div>;

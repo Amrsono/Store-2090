@@ -213,4 +213,116 @@ class Mutation:
             created_at=order.created_at,
             items=[]
         )
+    
+    @strawberry.mutation
+    def update_user(self, user_id: int, full_name: Optional[str] = None, email: Optional[str] = None) -> User:
+        """Update user information (admin only in production)"""
+        db: Session = next(get_db())
+        
+        # Find user
+        user = db.query(UserModel).filter(UserModel.id == user_id).first()
+        if not user:
+            raise Exception(f"User {user_id} not found")
+        
+        # Update fields if provided
+        if full_name is not None:
+            user.full_name = full_name
+        if email is not None:
+            # Check if email is already taken by another user
+            existing = db.query(UserModel).filter(UserModel.email == email, UserModel.id != user_id).first()
+            if existing:
+                raise Exception("Email already in use by another user")
+            user.email = email
+        
+        db.commit()
+        db.refresh(user)
+        
+        return User(
+            id=user.id,
+            email=user.email,
+            username=user.username,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_admin=user.is_admin,
+            created_at=user.created_at
+        )
+    
+    @strawberry.mutation
+    def toggle_user_status(self, user_id: int) -> User:
+        """Toggle user active status (admin only in production)"""
+        db: Session = next(get_db())
+        
+        # Find user
+        user = db.query(UserModel).filter(UserModel.id == user_id).first()
+        if not user:
+            raise Exception(f"User {user_id} not found")
+        
+        # Toggle status
+        user.is_active = not user.is_active
+        db.commit()
+        db.refresh(user)
+        
+        return User(
+            id=user.id,
+            email=user.email,
+            username=user.username,
+            full_name=user.full_name,
+            is_active=user.is_active,
+            is_admin=user.is_admin,
+            created_at=user.created_at
+        )
+    
+    @strawberry.mutation
+    def update_product(self, product_id: int, input: ProductInput) -> Product:
+        """Update an existing product (admin only in production)"""
+        db: Session = next(get_db())
+        
+        # Find product
+        product = db.query(ProductModel).filter(ProductModel.id == product_id).first()
+        if not product:
+            raise Exception(f"Product {product_id} not found")
+        
+        # Update fields
+        product.title = input.title
+        product.description = input.description
+        product.price = input.price
+        product.category = input.category.value
+        product.gradient = input.gradient
+        product.size = input.size.value
+        product.stock = input.stock
+        if input.image_url:
+            product.image_url = input.image_url
+        
+        db.commit()
+        db.refresh(product)
+        
+        return Product(
+            id=product.id,
+            title=product.title,
+            description=product.description,
+            price=product.price,
+            category=input.category,
+            gradient=product.gradient,
+            size=input.size,
+            stock=product.stock,
+            image_url=product.image_url,
+            is_active=bool(product.is_active),
+            created_at=product.created_at
+        )
+    
+    @strawberry.mutation
+    def delete_product(self, product_id: int) -> bool:
+        """Delete a product (admin only in production)"""
+        db: Session = next(get_db())
+        
+        # Find product
+        product = db.query(ProductModel).filter(ProductModel.id == product_id).first()
+        if not product:
+            raise Exception(f"Product {product_id} not found")
+        
+        # Delete product
+        db.delete(product)
+        db.commit()
+        
+        return True
 
