@@ -118,9 +118,9 @@ export default function OrdersPage() {
     const filteredOrders = orders.filter(order => {
         const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
         const matchesSearch =
-            order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase());
+            String(order.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (order.customerName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (order.customerEmail || '').toLowerCase().includes(searchTerm.toLowerCase());
         return matchesStatus && matchesSearch;
     });
 
