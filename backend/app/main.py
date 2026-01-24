@@ -9,10 +9,14 @@ from app.models import User, Product, Order, OrderItem
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
+import os
+root_path = "/api" if os.getenv("VERCEL") else ""
+
 app = FastAPI(
     title="Cyber Fashion API",
     description="2070s Cyberpunk Fashion Store Backend with GraphQL",
-    version="1.0.0"
+    version="1.0.0",
+    root_path=root_path
 )
 
 # CORS Configuration
