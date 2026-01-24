@@ -66,3 +66,18 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "cyber-fashion-api"}
+
+
+@app.get("/seed")
+async def seed_database():
+    """
+    Endpoint to seed the database with initial data (Products + Admin).
+    Use this once after deployment to populate the production database.
+    """
+    try:
+        from app.seed import seed_products
+        seed_products()
+        return {"status": "success", "message": "Database seeded successfully (Admin: admin@cyber.com)"}
+    except Exception as e:
+        import traceback
+        return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
