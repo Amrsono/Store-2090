@@ -168,7 +168,7 @@ export default function OrdersPage() {
                 </div>
 
                 {/* Status Filter */}
-                <div className="flex gap-2 overflow-x-auto">
+                <div className="flex gap-2 flex-wrap">
                     {statusOptions.map((status) => (
                         <motion.button
                             key={status.value}
