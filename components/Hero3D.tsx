@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { cn } from '@/lib/utils';
 
 export default function Hero3D() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     return (
         <div className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden">
@@ -23,7 +24,10 @@ export default function Hero3D() {
                             initial={{ x: -100, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.8, delay: 0.3 }}
-                            className="text-6xl md:text-8xl font-bold text-gradient neon-text-blue mb-4"
+                            className={cn(
+                                "font-bold text-gradient neon-text-blue mb-4 leading-tight",
+                                language === 'ar' ? "text-5xl md:text-7xl" : "text-6xl md:text-8xl"
+                            )}
                         >
                             {t.hero.title}
                         </motion.h1>
