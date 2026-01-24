@@ -1,6 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source "../components";
+@source "../app";
+
+@theme {
+  --color-obsidian: #0f0d01;
+  --color-deep-space: #1f1a02;
+  --color-void: #2b2403;
+  --color-neon-blue: #00d4ff;
+  --color-electric-cyan: #00fff5;
+  --color-plasma-pink: #ff00ff;
+  --color-quantum-purple: #b300ff;
+  --color-solar-yellow: #ffeb3b;
+  --color-cyber-green: #00ff88;
+}
 
 @layer base {
   :root {
