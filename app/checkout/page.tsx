@@ -101,7 +101,7 @@ export default function CheckoutPage() {
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-12"
+                    className="mb-8 md:mb-12"
                 >
                     <h1 className="text-5xl md:text-7xl font-bold text-gradient mb-4">{t.checkout.title}</h1>
                     <p className="text-xl text-gray-400">{t.checkout.completeOrder}</p>

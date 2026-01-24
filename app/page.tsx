@@ -19,13 +19,13 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 mb-52">
+      <section className="relative z-10 mb-24 lg:mb-52">
         <Hero3D />
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[var(--obsidian)] to-transparent pointer-events-none" />
       </section>
 
       {/* Floating Island 1: Features - Slightly Tilted */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 mb-52 lg:-rotate-1">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 mb-24 lg:mb-52 lg:-rotate-1">
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ export default function Home() {
       </div>
 
       {/* Floating Island 2: Products - Wide and Staggered */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 mb-52 lg:translate-x-12 lg:rotate-1">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 mb-24 lg:mb-52 lg:translate-x-12 lg:rotate-1">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -51,7 +51,7 @@ export default function Home() {
       </div>
 
       {/* Floating Island 3: Dashboard - Narrow and deep */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 mb-72 md:ml-20 lg:-rotate-1">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 mb-32 lg:mb-72 md:ml-20 lg:-rotate-1">
         <motion.div
           initial={{ opacity: 0, x: -100 }}
           whileInView={{ opacity: 1, x: 0 }}

@@ -72,6 +72,14 @@
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  @media (max-width: 768px) {
+    .floating-island {
+      padding: 1.5rem;
+      border-radius: 2.5rem;
+      margin: 2rem auto;
+    }
+  }
+
   /* Glassmorphism - Yellow Tinted and Softer */
   .glass {
     background: rgba(61, 52, 6, 0.2);

@@ -105,7 +105,7 @@ export default function LoginPage() {
                 transition={{ duration: 0.8 }}
                 className="relative z-10 w-full max-w-md"
             >
-                <div className="glass-strong rounded-[4rem] p-12 shadow-2xl border border-white/10 floating-island m-0">
+                <div className="glass-strong rounded-3xl md:rounded-[4rem] p-6 md:p-12 shadow-2xl border border-white/10 floating-island m-0">
                     <div className="text-center mb-10">
                         <Link href="/">
                             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl gradient-cyber flex items-center justify-center neon-glow-purple shadow-lg cursor-pointer">
