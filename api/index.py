@@ -1,10 +1,50 @@
 import sys
 import os
+from http.server import BaseHTTPRequestHandler
+import json
 
 # Add the backend directory to sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
+# In Vercel, the file structure might be different, let's try to find 'backend'
+current_dir = os.path.dirname(__file__)
+backend_dir = os.path.join(current_dir, '..', 'backend')
+sys.path.append(backend_dir)
 
-from app.main import app
-from mangum import Mangum
+try:
+    from app.main import app
+    from mangum import Mangum
+    handler = Mangum(app)
+except Exception as e:
+    import traceback
+    error_msg = traceback.format_exc()
+    
+    # Fallback handler to show the error
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            response = {
+                "error": "Import Error in api/index.py",
+                "details": str(e),
+                "traceback": error_msg.split('\n'),
+                "sys_path": sys.path,
+                "cwd": os.getcwd(),
+                "files_in_current": os.listdir(current_dir),
+                "files_in_parent": os.listdir(os.path.join(current_dir, '..')) if os.path.exists(os.path.join(current_dir, '..')) else "N/A"
+            }
+            self.wfile.write(json.dumps(response).encode())
+            return
+    
+    def handler(event, context):
+        # Allow it to work as a Vercel serverless function equivalent
+        # This is a bit of a hack to emulate the Mangum handler signature roughly or return standard output
+        return {
+            "statusCode": 500,
+            "body": json.dumps({
+                "error": "Critical Startup Error", 
+                "message": str(e),
+                "traceback": error_msg
+            }),
+            "headers": {"Content-Type": "application/json"}
+        }
 
-handler = Mangum(app)
