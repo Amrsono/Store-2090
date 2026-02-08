@@ -1,0 +1,20 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/migrate",
+            "destination": "/api/migrate.py"
+        },
+        {
+            "source": "/api/graphql",
+            "destination": "/api/graphql.py"
+        },
+        {
+            "source": "/api/seed",
+            "destination": "/api/seed.py"
+        },
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/index.py"
+        }
+    ]
+}
