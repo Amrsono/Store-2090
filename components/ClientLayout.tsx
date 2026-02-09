@@ -19,7 +19,7 @@ export default function ClientLayout({
             <div className="relative">
                 {children}
             </div>
-            <FloatingCart />
+            {!isAdminPage && <FloatingCart />}
         </LanguageProvider>
     );
 }

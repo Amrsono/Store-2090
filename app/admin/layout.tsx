@@ -51,12 +51,12 @@ export default function AdminLayout({
                 {/* Logo */}
                 <div className="p-6 border-b border-white/10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg gradient-cyber flex items-center justify-center neon-glow-purple">
-                            <span className="text-2xl font-bold">C</span>
+                        <div className="w-10 h-10 rounded-lg gradient-modern flex items-center justify-center neon-glow-purple">
+                            <span className="text-2xl font-bold">M</span>
                         </div>
                         {sidebarOpen && (
                             <div>
-                                <h1 className="text-xl font-bold text-gradient">CYBER</h1>
+                                <h1 className="text-xl font-bold text-gradient uppercase">Modern</h1>
                                 <p className="text-xs text-gray-400">Admin Panel</p>
                             </div>
                         )}
@@ -105,7 +105,7 @@ export default function AdminLayout({
                         {sidebarOpen && (
                             <div className="flex-1">
                                 <p className="text-sm font-semibold">Admin</p>
-                                <p className="text-xs text-gray-400">admin@cyber.com</p>
+                                <p className="text-xs text-gray-400">admin@modern.com</p>
                             </div>
                         )}
                     </div>
