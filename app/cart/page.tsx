@@ -20,7 +20,7 @@ export default function CartPage() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="glass shadow-2xl rounded-[4rem] p-16 text-center max-w-lg w-full floating-island border border-white/10"
+                    className="glass shadow-2xl rounded-[2rem] md:rounded-[4rem] p-8 md:p-16 text-center max-w-lg w-full floating-island border border-white/10"
                 >
                     <div className="w-24 h-24 mx-auto mb-8 rounded-2xl gradient-cyber flex items-center justify-center neon-glow-purple shadow-lg">
                         <span className="text-5xl">🛒</span>
@@ -56,7 +56,7 @@ export default function CartPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-16 text-center lg:text-left"
                 >
-                    <h1 className="text-6xl md:text-8xl font-black text-gradient mb-4 tracking-tighter uppercase">{t.cart.title}</h1>
+                    <h1 className="text-4xl md:text-8xl font-black text-gradient mb-4 tracking-tighter uppercase">{t.cart.title}</h1>
                     <div className="inline-flex items-center gap-3 glass px-6 py-2 rounded-full border border-white/10">
                         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                         <p className="text-lg font-bold text-gray-300 uppercase tracking-widest">{getTotalItems()} {t.trending.itemsSold}</p>
@@ -72,7 +72,7 @@ export default function CartPage() {
                                 initial={{ opacity: 0, x: -50 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="glass-strong rounded-[3rem] p-4 border border-white/5 shadow-2xl relative group overflow-hidden"
+                                className="glass-strong rounded-[2rem] md:rounded-[3rem] p-4 border border-white/5 shadow-2xl relative group overflow-hidden"
                             >
                                 <div className="flex flex-col md:flex-row items-center gap-8">
                                     {/* Product Image */}
@@ -139,7 +139,7 @@ export default function CartPage() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="glass shadow-2xl rounded-[3.5rem] p-10 border border-white/10 floating-island m-0 overflow-hidden relative"
+                            className="glass shadow-2xl rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-10 border border-white/10 floating-island m-0 overflow-hidden relative"
                         >
                             {/* Inner Glow */}
                             <div className="absolute top-[-100px] left-[-100px] w-48 h-48 bg-[var(--neon-blue)] rounded-full blur-[80px] opacity-10" />

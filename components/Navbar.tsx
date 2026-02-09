@@ -10,7 +10,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
 
 export default function Navbar() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const { getTotalItems } = useCartStore();
     const { user, logout } = useAuthStore();
     const [scrolled, setScrolled] = useState(false);
@@ -53,7 +53,9 @@ export default function Navbar() {
                             whileHover={{ scale: 1.05 }}
                             className="flex items-center space-x-2"
                         >
-                            <span className="text-xl font-bold text-gradient">Modern Store Main</span>
+                            <span className="text-lg md:text-xl font-bold text-gradient truncate max-w-[150px] md:max-w-none">
+                                {language === 'ar' ? 'متجر مودرن' : 'Modern Store'}
+                            </span>
                         </motion.div>
                     </Link>
 
@@ -178,7 +180,7 @@ export default function Navbar() {
                         exit={{ opacity: 0, height: 0 }}
                         className="md:hidden glass-strong border-t border-white/10"
                     >
-                        <div className="px-4 py-6 space-y-3">
+                        <div className="px-4 py-4 md:py-6 space-y-2 md:space-y-3">
                             <div className="flex justify-between items-center mb-6">
                                 <LanguageSwitcher />
                             </div>

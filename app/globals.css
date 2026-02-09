@@ -75,7 +75,8 @@
   @media (max-width: 768px) {
     .floating-island {
       padding: 1.5rem;
-      border-radius: 2.5rem;
+      border-radius: 2rem;
+      /* Reduced from 4rem */
       margin: 2rem auto;
     }
   }
@@ -89,6 +90,13 @@
     border-radius: 3rem;
   }
 
+  @media (max-width: 768px) {
+    .glass {
+      border-radius: 1.5rem;
+      /* Reduced from 3rem */
+    }
+  }
+
   .glass-strong {
     background: rgba(61, 52, 6, 0.4);
     backdrop-filter: blur(40px);
@@ -96,6 +104,14 @@
     border: 1px solid rgba(255, 235, 59, 0.2);
     border-radius: 4rem;
   }
+
+  @media (max-width: 768px) {
+    .glass-strong {
+      border-radius: 2rem;
+      /* Reduced from 4rem */
+    }
+  }
+
 
   /* Neon Glow Effects */
   .neon-glow-blue {

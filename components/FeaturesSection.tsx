@@ -58,7 +58,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className="group relative"
         >
-            <div className="glass shadow-2xl rounded-[3rem] p-8 hover-lift h-full border border-white/5">
+            <div className="glass shadow-2xl rounded-[1.5rem] md:rounded-[3rem] p-5 md:p-8 hover-lift h-full border border-white/5">
                 {/* Icon */}
                 <motion.div
                     whileHover={{ scale: 1.1, rotate: 5 }}
@@ -76,9 +76,9 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
                 </p>
 
                 {/* Hover Border Effect */}
-                <div className="absolute inset-0 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className={`absolute inset-0 rounded-[3rem] bg-gradient-to-r ${feature.color} p-[2px]`}>
-                        <div className="w-full h-full rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
+                <div className="absolute inset-0 rounded-[1.5rem] md:rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <div className={`absolute inset-0 rounded-[1.5rem] md:rounded-[3rem] bg-gradient-to-r ${feature.color} p-[2px]`}>
+                        <div className="w-full h-full rounded-[1.5rem] md:rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@ export default function FeaturesSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10 md:mb-16"
                 >
                     <motion.div
                         className="inline-block mb-4"
@@ -172,9 +172,9 @@ export default function FeaturesSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="mt-16 text-center"
+                    className="mt-12 md:mt-16 text-center"
                 >
-                    <div className="glass rounded-3xl p-8 max-w-3xl mx-auto border border-white/5">
+                    <div className="glass rounded-[2rem] md:rounded-3xl p-6 md:p-8 max-w-3xl mx-auto border border-white/5">
                         <h3 className="text-2xl md:text-4xl font-bold text-gradient mb-4">
                             {t.features.ctaTitle}
                         </h3>

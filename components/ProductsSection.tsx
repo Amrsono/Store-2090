@@ -46,7 +46,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             viewport={{ once: false, margin: '-100px' }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className={cn(
-                'group relative overflow-hidden rounded-[3rem] glass shadow-2xl p-8 hover-lift cursor-pointer border border-white/5 min-h-[350px]',
+                'group relative overflow-hidden rounded-[2rem] md:rounded-[3rem] glass shadow-2xl p-5 md:p-8 hover-lift cursor-pointer border border-white/5 min-h-[300px] md:min-h-[350px]',
                 sizeClasses[product.size || 'medium']
             )}
         >
@@ -105,12 +105,12 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             </div>
 
             {/* Hover Effect Border */}
-            <div className="absolute inset-0 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="absolute inset-0 rounded-[2rem] md:rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                 <div className={cn(
-                    'absolute inset-0 rounded-[3rem] bg-gradient-to-r p-[2px]',
+                    'absolute inset-0 rounded-[2rem] md:rounded-[3rem] bg-gradient-to-r p-[2px]',
                     product.gradient || 'from-[var(--neon-blue)] to-[var(--quantum-purple)]'
                 )}>
-                    <div className="w-full h-full rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
+                    <div className="w-full h-full rounded-[2rem] md:rounded-[3rem] bg-[var(--obsidian)] opacity-90" />
                 </div>
             </div>
         </motion.div>
@@ -181,7 +181,7 @@ export default function ProductsSection() {
                     className="text-center mb-16"
                 >
                     <motion.h2
-                        className="text-4xl md:text-7xl font-bold text-gradient mb-6"
+                        className="text-4xl md:text-7xl font-bold text-gradient mb-4 md:mb-6"
                     >
                         {t.products.title}
                     </motion.h2>

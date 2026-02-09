@@ -41,7 +41,7 @@ function StatCard({ title, value, change, trend, icon, delay }: StatCardProps) {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: false }}
             transition={{ duration: 0.6, delay }}
-            className="glass shadow-xl rounded-[2.5rem] p-8 hover-lift group cursor-pointer border border-white/5"
+            className="glass shadow-xl rounded-[1.5rem] md:rounded-[2.5rem] p-5 md:p-8 hover-lift group cursor-pointer border border-white/5"
         >
             <div className="flex items-start justify-between mb-6">
                 <div className="w-14 h-14 rounded-2xl gradient-modern flex items-center justify-center shadow-lg group-hover:neon-glow-purple transition-all duration-300">
@@ -75,7 +75,7 @@ function ChartBar({ height, delay, label, value }: { height: number; delay: numb
             <div className="relative w-full group cursor-pointer">
                 <motion.div
                     whileHover={{ scaleY: 1.1 }}
-                    style={{ height: `${height}px` }}
+                    style={{ height: `${height}%` }}
                     className="w-full rounded-t-lg gradient-modern neon-glow-blue group-hover:neon-glow-purple transition-all duration-300"
                 />
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -109,6 +109,8 @@ export default function DashboardSection() {
         { label: 'May', value: '2.8K', height: 280 },
         { label: 'Jun', value: '2.4K', height: 240 },
     ];
+
+    const maxChartHeight = Math.max(...chartData.map(d => d.height));
 
     return (
         <div id="dashboard" className="relative">
@@ -150,7 +152,7 @@ export default function DashboardSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: false }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="glass rounded-[3rem] p-8 border border-white/5"
+                    className="glass rounded-[2rem] md:rounded-[3rem] p-5 md:p-8 border border-white/5"
                 >
                     <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
                         <div>
@@ -171,11 +173,12 @@ export default function DashboardSection() {
                     </div>
 
                     {/* Chart */}
-                    <div className="flex items-end justify-between gap-4 h-64 md:h-80 px-4">
+                    <div className="flex items-end justify-between gap-2 md:gap-4 h-52 md:h-80 px-2 md:px-4">
                         {chartData.map((data, index) => (
                             <ChartBar
                                 key={data.label}
                                 {...data}
+                                height={(data.height / maxChartHeight) * 100} // Scale to percentage of container
                                 delay={0.6 + index * 0.1}
                             />
                         ))}
@@ -189,7 +192,7 @@ export default function DashboardSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.6 }}
-                        className="glass-strong rounded-[2.5rem] p-8 border border-white/5"
+                        className="glass-strong rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 border border-white/5"
                     >
                         <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.recentOrders}</h3>
                         <div className="space-y-4">
@@ -224,7 +227,7 @@ export default function DashboardSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: false }}
                         transition={{ duration: 0.8, delay: 0.6 }}
-                        className="glass-strong rounded-[2.5rem] p-8 border border-white/5"
+                        className="glass-strong rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 border border-white/5"
                     >
                         <h3 className="text-xl font-bold text-gradient mb-6">{t.trending.bestsellers}</h3>
                         <div className="space-y-6">

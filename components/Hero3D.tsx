@@ -16,7 +16,7 @@ export default function Hero3D() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.2 }}
-                    className="space-y-6"
+                    className="space-y-4 md:space-y-6"
                 >
                     {/* Animated Sliding Text */}
                     <div className="overflow-hidden">
@@ -25,8 +25,8 @@ export default function Hero3D() {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.8, delay: 0.3 }}
                             className={cn(
-                                "font-bold text-gradient neon-text-blue mb-4 leading-tight",
-                                language === 'ar' ? "text-5xl md:text-7xl" : "text-6xl md:text-8xl"
+                                "font-bold text-gradient neon-text-blue mb-2 md:mb-4 leading-tight",
+                                language === 'ar' ? "text-4xl md:text-7xl" : "text-5xl md:text-8xl"
                             )}
                         >
                             {t.hero.title}
@@ -39,7 +39,7 @@ export default function Hero3D() {
                         transition={{ duration: 0.8, delay: 0.5 }}
                         className="overflow-hidden"
                     >
-                        <h2 className="text-2xl md:text-4xl font-light text-gradient-yellow">
+                        <h2 className="text-xl md:text-4xl font-light text-gradient-yellow">
                             {t.hero.subtitle}
                         </h2>
                     </motion.div>
@@ -48,7 +48,7 @@ export default function Hero3D() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 1, delay: 0.7 }}
-                        className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto"
+                        className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto"
                     >
                         {t.hero.description}
                     </motion.p>
@@ -57,19 +57,20 @@ export default function Hero3D() {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.9 }}
-                        className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
+                        className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mt-6 md:mt-8"
                     >
                         <a href="#products">
-                            <button className="glass-strong px-8 py-4 rounded-full font-semibold text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300 hover-lift">
+                            <button className="glass-strong px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-base md:text-lg neon-glow-blue hover:neon-glow-purple transition-all duration-300 hover-lift">
                                 {t.hero.shopCollection}
                             </button>
                         </a>
                         <a href="#features">
-                            <button className="gradient-border px-8 py-4 rounded-full font-semibold text-lg hover-lift">
+                            <button className="gradient-border px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-base md:text-lg hover-lift">
                                 {t.hero.newArrivals}
                             </button>
                         </a>
                     </motion.div>
+
                 </motion.div>
 
                 {/* Scroll Indicator */}

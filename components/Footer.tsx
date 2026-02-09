@@ -19,7 +19,7 @@ const socialLinks = [
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     const footerLinks = {
         [t.footer.shop]: [t.products.categories.clothes, t.products.categories.shoes, t.products.categories.bags, t.products.categories.accessories],
@@ -36,12 +36,12 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="relative py-20 px-4 overflow-hidden border-t border-white/10">
+        <footer className="relative py-12 md:py-20 px-4 overflow-hidden border-t border-white/10">
             {/* Background */}
             <div className="absolute inset-0 gradient-mesh opacity-20" />
 
             <div className="relative z-10 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12">
                     {/* Brand */}
                     <div className="lg:col-span-1">
                         <motion.div
@@ -51,7 +51,9 @@ export default function Footer() {
                             className="space-y-4"
                         >
                             <div className="flex items-center space-x-2">
-                                <span className="text-2xl font-bold text-gradient">Modern Store Main</span>
+                                <span className="text-xl md:text-2xl font-bold text-gradient">
+                                    {language === 'ar' ? 'متجر مودرن' : 'Modern Store'}
+                                </span>
                             </div>
                             <p className="text-gray-400 text-sm max-w-xs">
                                 {t.footer.description}
@@ -112,7 +114,7 @@ export default function Footer() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="glass-strong rounded-2xl p-8 mb-12"
+                    className="glass-strong rounded-2xl p-6 md:p-8 mb-12"
                 >
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <div>
